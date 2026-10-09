@@ -9,7 +9,8 @@ const {
     activateElection,
     closeElection,
     getResults,
-    deleteElection
+    deleteElection,
+    addEligibleVoter
 } = require("../controllers/adminController");
 
 const {
@@ -22,6 +23,9 @@ const router = express.Router();
 // All admin routes require authentication + admin role
 router.use(protect, adminOnly);
 
+// Eligible voter management
+router.post("/eligible-voters", addEligibleVoter);
+
 // Election management
 router.post("/elections", createElection);
 
@@ -29,12 +33,11 @@ router.delete("/elections/:electionId", deleteElection);
 
 router.get("/elections", getAllElections);
 
+
 router.put(
     "/elections/:electionId/schedule",
     updateElectionSchedule
 );
-
-router.post("/elections", createElection);
 
 router.post(
     "/elections/:electionId/activate",
@@ -45,6 +48,7 @@ router.post(
     "/elections/:electionId/close",
     closeElection
 );
+
 
 // Candidate management
 router.post("/candidates", createCandidate);

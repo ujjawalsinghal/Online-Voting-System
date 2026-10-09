@@ -57,19 +57,21 @@ const castVote = async (req, res) => {
         }
 
         // Check election status
+
         const now = new Date();
 
-        if (
-            election.status !== "active" ||
-            now < election.startTime ||
-            now > election.endTime
-        ) {
+        const votingWindowOpen =
+            now >= election.startTime &&
+            now <= election.endTime;
+
+        if (election.status !== "active" || !votingWindowOpen) {
             await session.abortTransaction();
 
             return res.status(400).json({
                 message: "Voting is not currently open"
             });
         }
+
 
         // Find candidate
         const candidate = await Candidate

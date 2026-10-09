@@ -10,12 +10,14 @@ const Dashboard = () => {
     const [voting, setVoting] = useState(false);
     const [message, setMessage] = useState("");
 
+
 useEffect(() => {
+    let isMounted = true;
+
     const fetchElection = async () => {
         try {
             const token = localStorage.getItem("token");
 
-            // Get the currently active election
             const electionResponse = await api.get(
                 "/elections/active",
                 {
@@ -28,9 +30,19 @@ useEffect(() => {
             const activeElection =
                 electionResponse.data.election;
 
+            if (!isMounted) return;
+
+            // No active election is available
+            if (!activeElection) {
+                setElection(null);
+                setCandidates([]);
+                setHasVoted(false);
+                setMessage("No election is currently available.");
+                return;
+            }
+
             setElection(activeElection);
 
-            // Check whether this voter has already voted
             const statusResponse = await api.get(
                 `/elections/${activeElection.id}/status`,
                 {
@@ -40,9 +52,10 @@ useEffect(() => {
                 }
             );
 
+            if (!isMounted) return;
+
             setHasVoted(statusResponse.data.hasVoted);
 
-            // Get candidates for the active election
             const candidatesResponse = await api.get(
                 `/elections/${activeElection.id}/candidates`,
                 {
@@ -52,22 +65,36 @@ useEffect(() => {
                 }
             );
 
-            setCandidates(
-                candidatesResponse.data.candidates
-            );
+            if (!isMounted) return;
 
+            setCandidates(candidatesResponse.data.candidates);
+            setMessage("");
         } catch (error) {
+            if (!isMounted) return;
+
+            setElection(null);
+            setCandidates([]);
             setMessage(
                 error.response?.data?.message ||
-                "Failed to load election"
+                "Failed to load election. Retrying shortly."
             );
         } finally {
-            setLoading(false);
+            if (isMounted) {
+                setLoading(false);
+            }
         }
     };
 
     fetchElection();
+
+    const intervalId = setInterval(fetchElection, 30000);
+
+    return () => {
+        isMounted = false;
+        clearInterval(intervalId);
+    };
 }, []);
+
 
     const handleVote = async (candidateId, candidateName) => {
         const confirmed = window.confirm(

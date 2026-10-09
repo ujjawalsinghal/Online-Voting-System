@@ -24,6 +24,16 @@ const AdminDashboard = () => {
     const [candidateDescription, setCandidateDescription] = useState("");
     const [addingCandidate, setAddingCandidate] = useState(false);
 
+    // Eligible voter states
+    const [eligibleName, setEligibleName] = useState("");
+    const [eligibleStudentId, setEligibleStudentId] = useState("");
+    const [addingEligibleVoter, setAddingEligibleVoter] = useState(false);
+
+    // Update election schedule states
+    const [editStartTime, setEditStartTime] = useState("");
+    const [editEndTime, setEditEndTime] = useState("");
+    const [updatingSchedule, setUpdatingSchedule] = useState(false);
+
     // --------------------------------------------------
     // CREATE ELECTION
     // --------------------------------------------------
@@ -136,6 +146,154 @@ const AdminDashboard = () => {
             setAddingCandidate(false);
         }
     };
+
+
+    const handleAddEligibleVoter = async (e) => {
+        e.preventDefault();
+
+        if (!eligibleName.trim() || !eligibleStudentId.trim()) {
+            setMessage("Student name and student ID are required.");
+            return;
+        }
+
+        try {
+            setAddingEligibleVoter(true);
+            setMessage("");
+
+            const token = localStorage.getItem("token");
+
+            const response = await api.post(
+                "/admin/eligible-voters",
+                {
+                    name: eligibleName.trim(),
+                    studentId: eligibleStudentId.trim().toUpperCase()
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            setMessage(response.data.message);
+            setEligibleName("");
+            setEligibleStudentId("");
+        } catch (error) {
+            setMessage(
+                error.response?.data?.message ||
+                "Failed to add eligible voter."
+            );
+        } finally {
+            setAddingEligibleVoter(false);
+        }
+    };
+
+    // UPDATE ELECTION SCHEDULE
+    const handleUpdateSchedule = async (e) => {
+        e.preventDefault();
+
+        if (!selectedElectionId) {
+            setMessage("Please select an election.");
+            return;
+        }
+
+        if (!editStartTime || !editEndTime) {
+            setMessage("Start time and end time are required.");
+            return;
+        }
+
+        if (new Date(editEndTime) <= new Date(editStartTime)) {
+            setMessage("End time must be after start time.");
+            return;
+        }
+
+        try {
+            setUpdatingSchedule(true);
+            setMessage("");
+
+            const token = localStorage.getItem("token");
+
+            const response = await api.put(
+                `/admin/elections/${selectedElectionId}/schedule`,
+                {
+                    startTime: new Date(editStartTime).toISOString(),
+                    endTime: new Date(editEndTime).toISOString()
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            setMessage(
+                response.data.message ||
+                "Election schedule updated successfully."
+            );
+
+            await fetchElections();
+            await fetchResults(selectedElectionId);
+        } catch (error) {
+            setMessage(
+                error.response?.data?.message ||
+                "Failed to update election schedule."
+            );
+        } finally {
+            setUpdatingSchedule(false);
+        }
+    };
+
+
+
+    const handleDeleteElection = async () => {
+        if (!selectedElectionId) {
+            setMessage("Please select an election.");
+            return;
+        }
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this election? This action cannot be undone."
+        );
+
+        if (!confirmed) return;
+
+        try {
+            setMessage("");
+
+            const token = localStorage.getItem("token");
+
+            const response = await api.delete(
+                `/admin/elections/${selectedElectionId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            setMessage(
+                response.data.message || "Election deleted successfully."
+            );
+
+            setElection(null);
+            setCandidateName([]);
+            setResults([]);
+            setTotalVotes(0);
+            setSelectedElectionId("");
+
+            await fetchElections();
+
+        } catch (error) {
+            console.error("Delete election error:", error);
+
+            setMessage(
+                error.response?.data?.message ||
+                `Request failed (${error.response?.status || "network error"}). Check the browser console.`
+            );
+        }
+
+    };
+
 
     // --------------------------------------------------
     // FETCH ALL ELECTIONS
@@ -478,6 +636,66 @@ const AdminDashboard = () => {
 
             <hr />
 
+
+            {/* ==========================================
+    ELIGIBLE VOTER MANAGEMENT
+========================================== */}
+
+            <hr />
+
+            <h2>Register Eligible Voter</h2>
+
+            <p>
+                Add a student's details to the approved-voter registry.
+                The student can then create their voter account.
+            </p>
+
+            <form onSubmit={handleAddEligibleVoter}>
+                <div>
+                    <label htmlFor="eligibleName">
+                        Student Name
+                    </label>
+                    <br />
+                    <input
+                        id="eligibleName"
+                        type="text"
+                        value={eligibleName}
+                        onChange={(e) => setEligibleName(e.target.value)}
+                        placeholder="Enter student name"
+                        required
+                    />
+                </div>
+
+                <br />
+
+                <div>
+                    <label htmlFor="eligibleStudentId">
+                        Student ID
+                    </label>
+                    <br />
+                    <input
+                        id="eligibleStudentId"
+                        type="text"
+                        value={eligibleStudentId}
+                        onChange={(e) => setEligibleStudentId(e.target.value)}
+                        placeholder="Enter student ID"
+                        required
+                    />
+                </div>
+
+                <br />
+
+                <button
+                    type="submit"
+                    disabled={addingEligibleVoter}
+                >
+                    {addingEligibleVoter
+                        ? "Adding Student..."
+                        : "Add Eligible Voter"}
+                </button>
+            </form>
+
+
             {/* ==========================================
                 SELECT ELECTION
             ========================================== */}
@@ -515,6 +733,59 @@ const AdminDashboard = () => {
             </div>
 
             <hr />
+            <hr />
+
+            {/* UPDATE ELECTION SCHEDULE */}
+            <h2>Update Election Schedule</h2>
+
+            <p>
+                Select an election above, then update its start and end time.
+            </p>
+
+            <form onSubmit={handleUpdateSchedule}>
+                <div>
+                    <label htmlFor="editStartTime">
+                        New Start Time
+                    </label>
+                    <br />
+                    <input
+                        id="editStartTime"
+                        type="datetime-local"
+                        value={editStartTime}
+                        onChange={(e) => setEditStartTime(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <br />
+
+                <div>
+                    <label htmlFor="editEndTime">
+                        New End Time
+                    </label>
+                    <br />
+                    <input
+                        id="editEndTime"
+                        type="datetime-local"
+                        value={editEndTime}
+                        onChange={(e) => setEditEndTime(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <br />
+
+                <button
+                    type="submit"
+                    disabled={updatingSchedule || !selectedElectionId}
+                >
+                    {updatingSchedule
+                        ? "Updating Schedule..."
+                        : "Update Schedule"}
+                </button>
+            </form>
+
+            <hr />
 
             {/* ==========================================
                 ELECTION RESULTS
@@ -531,9 +802,22 @@ const AdminDashboard = () => {
                         Status: {election.status}
                     </h3>
 
+
                     <h3>
                         Total Votes: {totalVotes}
                     </h3>
+
+                    <button
+                        type="button"
+                        onClick={handleDeleteElection}
+                        disabled={!selectedElectionId}
+                        style={{ margin: "10px" }}
+                    >
+                        Delete Selected Election
+                    </button>
+
+                    <hr />
+
 
                     <hr />
 
@@ -604,7 +888,7 @@ const AdminDashboard = () => {
             ========================================== */}
 
             {message && (
-                <p>
+                <p role="status" style={{ color: "green", margin: "10px 0" }}>
                     {message}
                 </p>
             )}

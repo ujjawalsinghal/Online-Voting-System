@@ -12,6 +12,7 @@ const authRoutes = require("./routes/authRoutes");
 const voteRoutes = require("./routes/voteRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const electionRoutes = require("./routes/electionRoutes");
+const { startElectionScheduler } = require("./utils/electionScheduler");
 
 const app = express();
 
@@ -75,4 +76,5 @@ const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    startElectionScheduler();
 });

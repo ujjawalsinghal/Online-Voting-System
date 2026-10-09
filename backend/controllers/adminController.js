@@ -1,6 +1,7 @@
 const Election = require("../models/Election");
 const Candidate = require("../models/Candidate");
 const Vote = require("../models/Vote");
+const EligibleVoter = require("../models/EligibleVoter");
 
 const getAllElections = async (req, res) => {
     try {
@@ -432,6 +433,64 @@ const getResults = async (req, res) => {
     }
 };
 
+//Eligible Voter Management
+const addEligibleVoter = async (req, res) => {
+    try {
+        const { name, studentId } = req.body;
+
+        if (
+            typeof name !== "string" ||
+            typeof studentId !== "string" ||
+            !name.trim() ||
+            !studentId.trim()
+        ) {
+            return res.status(400).json({
+                message: "Name and student ID are required"
+            });
+        }
+
+        const normalizedStudentId = studentId.trim().toUpperCase();
+
+        const existingVoter = await EligibleVoter.findOne({
+            studentId: normalizedStudentId
+        });
+
+        if (existingVoter) {
+            return res.status(409).json({
+                message: "This student ID is already in the eligible-voter registry"
+            });
+        }
+
+        const eligibleVoter = await EligibleVoter.create({
+            name: name.trim(),
+            studentId: normalizedStudentId
+        });
+
+        return res.status(201).json({
+            message: "Eligible voter added successfully",
+            eligibleVoter: {
+                id: eligibleVoter._id,
+                name: eligibleVoter.name,
+                studentId: eligibleVoter.studentId,
+                isRegistered: eligibleVoter.isRegistered
+            }
+        });
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "This student ID is already in the eligible-voter registry"
+            });
+        }
+
+        console.error("Add eligible voter error:", error);
+
+        return res.status(500).json({
+            message: "Server error while adding eligible voter"
+        });
+    }
+};
+
+
 
 module.exports = {
     getAllElections,
@@ -443,5 +502,6 @@ module.exports = {
     activateElection,
     closeElection,
     getResults,
-    deleteElection
+    deleteElection,
+    addEligibleVoter
 };

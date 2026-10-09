@@ -1,23 +1,33 @@
 const Election = require("../models/Election");
 const ElectionVoter = require("../models/ElectionVoter");
 
+
 const getActiveElection = async (req, res) => {
     try {
         const now = new Date();
 
+        // Find an election whose scheduled voting window is open.
+        // Exclude completed elections.
         const election = await Election.findOne({
-            status: "active",
+            status: { $ne: "completed" },
             startTime: { $lte: now },
             endTime: { $gte: now }
         }).sort({ startTime: 1 });
 
         if (!election) {
-            return res.status(404).json({
+            return res.status(200).json({
+                election: null,
                 message: "No active election is currently available"
             });
         }
 
-        res.json({
+        // Mark the election active when its scheduled window opens.
+        if (election.status !== "active") {
+            election.status = "active";
+            await election.save();
+        }
+
+        return res.json({
             election: {
                 id: election._id,
                 title: election.title,
@@ -27,18 +37,15 @@ const getActiveElection = async (req, res) => {
                 status: election.status
             }
         });
-
     } catch (error) {
-        console.error(
-            "Get active election error:",
-            error
-        );
+        console.error("Get active election error:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             message: "Server error while getting active election"
         });
     }
 };
+
 
 const getVotingStatus = async (req, res) => {
     try {

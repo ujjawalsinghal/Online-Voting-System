@@ -1,40 +1,102 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const mongoose = require("mongoose");
+const EligibleVoter = require("../models/EligibleVoter");
 
 // Register a new user
+
 const registerUser = async (req, res) => {
+    const session = await mongoose.startSession();
+
     try {
         const { name, studentId, password } = req.body;
 
-        // Check required fields
-        if (!name || !studentId || !password) {
+        if (
+            typeof name !== "string" ||
+            typeof studentId !== "string" ||
+            typeof password !== "string" ||
+            !name.trim() ||
+            !studentId.trim() ||
+            !password
+        ) {
             return res.status(400).json({
                 message: "Name, student ID and password are required"
             });
         }
 
-        // Check if user already exists
-        const existingUser = await User.findOne({ studentId });
-
-        if (existingUser) {
+        if (password.length < 8) {
             return res.status(400).json({
-                message: "User with this student ID already exists"
+                message: "Password must be at least 8 characters long"
             });
         }
 
-        // Hash password
+        const normalizedStudentId = studentId.trim().toUpperCase();
+
+        session.startTransaction();
+
+        const eligibleVoter = await EligibleVoter.findOne({
+            studentId: normalizedStudentId
+        }).session(session);
+
+        if (!eligibleVoter) {
+            await session.abortTransaction();
+
+            return res.status(403).json({
+                message: "This student ID is not approved for registration"
+            });
+        }
+
+        if (
+            eligibleVoter.name.trim().toLowerCase() !==
+            name.trim().toLowerCase()
+        ) {
+            await session.abortTransaction();
+
+            return res.status(403).json({
+                message: "Name does not match the eligible-voter record"
+            });
+        }
+
+        if (eligibleVoter.isRegistered) {
+            await session.abortTransaction();
+
+            return res.status(409).json({
+                message: "This student has already registered"
+            });
+        }
+
+        const existingUser = await User.findOne({
+            studentId: normalizedStudentId
+        }).session(session);
+
+        if (existingUser) {
+            await session.abortTransaction();
+
+            return res.status(409).json({
+                message: "An account with this student ID already exists"
+            });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create user
-        const user = await User.create({
-            name,
-            studentId,
-            password: hashedPassword,
-            role: "voter"
-        });
+        const [user] = await User.create(
+            [{
+                name: name.trim(),
+                studentId: normalizedStudentId,
+                password: hashedPassword,
+                role: "voter"
+            }],
+            { session }
+        );
 
-        res.status(201).json({
+        eligibleVoter.isRegistered = true;
+        eligibleVoter.registeredUser = user._id;
+
+        await eligibleVoter.save({ session });
+        await session.commitTransaction();
+
+        return res.status(201).json({
             message: "User registered successfully",
             user: {
                 id: user._id,
@@ -43,15 +105,27 @@ const registerUser = async (req, res) => {
                 role: user.role
             }
         });
-
     } catch (error) {
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
+
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "An account or eligibility record already exists"
+            });
+        }
+
         console.error("Registration error:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             message: "Server error during registration"
         });
+    } finally {
+        await session.endSession();
     }
 };
+
 
 
 // Login user
