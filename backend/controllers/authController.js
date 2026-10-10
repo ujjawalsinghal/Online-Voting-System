@@ -133,14 +133,21 @@ const loginUser = async (req, res) => {
     try {
         const { studentId, password } = req.body;
 
-        if (!studentId || !password) {
+        if (
+            typeof studentId !== "string" ||
+            typeof password !== "string" ||
+            !studentId.trim() ||
+            !password
+        ) {
             return res.status(400).json({
                 message: "Student ID and password are required"
             });
         }
 
+        const normalizedStudentId = studentId.trim().toUpperCase();
+
         // Find user
-        const user = await User.findOne({ studentId });
+        const user = await User.findOne({ studentId: normalizedStudentId });
 
         if (!user) {
             return res.status(401).json({

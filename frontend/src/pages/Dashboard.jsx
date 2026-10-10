@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { getVoterToken } from "../services/authStorage";
 
 
 const Dashboard = () => {
@@ -16,7 +17,7 @@ useEffect(() => {
 
     const fetchElection = async () => {
         try {
-            const token = localStorage.getItem("token");
+            const token = getVoterToken();
 
             const electionResponse = await api.get(
                 "/elections/active",
@@ -109,7 +110,7 @@ useEffect(() => {
             setVoting(true);
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getVoterToken();
 
             await api.post(
                 "/votes",

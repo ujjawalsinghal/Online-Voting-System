@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
+import { getAdminToken } from "../services/authStorage";
 import "./AdminSchedule.css";
 
 function toLocalDateTime(value) {
@@ -31,7 +32,7 @@ function AdminSchedule() {
 
     const authConfig = () => ({
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getAdminToken()}`,
         },
     });
 

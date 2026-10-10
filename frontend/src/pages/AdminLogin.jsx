@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { setAdminSession, clearAdminSession } from "../services/authStorage";
 
 const AdminLogin = () => {
     const [studentId, setStudentId] = useState("");
@@ -24,14 +25,16 @@ const AdminLogin = () => {
 
             const { token, user } = response.data;
 
-            // Make sure this account is actually an admin
+            // Make sure this account is actually an admin.
+            // If not, discard the received token entirely — do not persist
+            // a non-admin session in localStorage under any key.
             if (user.role !== "admin") {
+                clearAdminSession();
                 setMessage("Access denied. Admin account required.");
                 return;
             }
 
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
+            setAdminSession(token, user);
 
             navigate("/admin/dashboard");
 

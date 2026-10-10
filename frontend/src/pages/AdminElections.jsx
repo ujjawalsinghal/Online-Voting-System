@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
+import { getAdminToken } from "../services/authStorage";
 
 import "./AdminElections.css";
 
@@ -21,7 +22,7 @@ function AdminElections() {
     const [editDescription, setEditDescription] = useState("");
 
     const getAuthHeaders = () => ({
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getAdminToken()}`,
     });
 
     const fetchElections = useCallback(async () => {
@@ -74,8 +75,8 @@ function AdminElections() {
                 {
                     title: title.trim(),
                     description: description.trim(),
-                    startTime,
-                    endTime,
+                    startTime: new Date(startTime).toISOString(),
+                    endTime: new Date(endTime).toISOString(),
                 },
                 { headers: getAuthHeaders() }
             );

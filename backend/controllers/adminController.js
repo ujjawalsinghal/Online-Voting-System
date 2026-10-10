@@ -150,9 +150,9 @@ const createCandidate = async (req, res) => {
             });
         }
 
-        if (election.status === "completed") {
+        if (election.status !== "upcoming") {
             return res.status(400).json({
-                message: "Cannot add candidates to a completed election"
+                message: "Candidates can only be added to upcoming elections"
             });
         }
 
@@ -463,35 +463,41 @@ const updateElectionSchedule = async (req, res) => {
             });
         }
 
-        if (startTime) {
-            const start = new Date(startTime);
-
-            if (isNaN(start.getTime())) {
-                return res.status(400).json({
-                    message: "Invalid start time"
-                });
-            }
-
-            election.startTime = start;
+        if (election.status !== "upcoming") {
+            return res.status(400).json({
+                message: "Schedule can only be updated for upcoming elections"
+            });
         }
 
-        if (endTime) {
-            const end = new Date(endTime);
-
-            if (isNaN(end.getTime())) {
-                return res.status(400).json({
-                    message: "Invalid end time"
-                });
-            }
-
-            election.endTime = end;
+        if (!startTime && !endTime) {
+            return res.status(400).json({
+                message: "Start time or end time is required"
+            });
         }
 
-        if (election.endTime <= election.startTime) {
+        const resolvedStart = startTime ? new Date(startTime) : election.startTime;
+        const resolvedEnd = endTime ? new Date(endTime) : election.endTime;
+
+        if (isNaN(resolvedStart.getTime())) {
+            return res.status(400).json({
+                message: "Invalid start time"
+            });
+        }
+
+        if (isNaN(resolvedEnd.getTime())) {
+            return res.status(400).json({
+                message: "Invalid end time"
+            });
+        }
+
+        if (resolvedEnd <= resolvedStart) {
             return res.status(400).json({
                 message: "End time must be after start time"
             });
         }
+
+        election.startTime = resolvedStart;
+        election.endTime = resolvedEnd;
 
         await election.save();
 
@@ -520,6 +526,18 @@ const closeElection = async (req, res) => {
         if (!election) {
             return res.status(404).json({
                 message: "Election not found"
+            });
+        }
+
+        if (election.status === "completed") {
+            return res.status(400).json({
+                message: "Election is already closed"
+            });
+        }
+
+        if (election.status === "upcoming") {
+            return res.status(400).json({
+                message: "Cannot close an upcoming election that has not started"
             });
         }
 
@@ -691,6 +709,5 @@ module.exports = {
     activateElection,
     closeElection,
     getResults,
-    deleteElection,
     addEligibleVoter
 };

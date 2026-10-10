@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import api from "../services/api";
+import { getAdminToken } from "../services/authStorage";
 import "./AdminVoters.css";
 
 function AdminVoters() {
@@ -26,7 +27,7 @@ function AdminVoters() {
         try {
             setAdding(true);
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.post(
                 "/admin/eligible-voters",

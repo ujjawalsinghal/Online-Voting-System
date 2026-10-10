@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import { setVoterSession } from "../services/authStorage";
 
 const Login = () => {
     const [studentId, setStudentId] = useState("");
@@ -25,8 +26,7 @@ const Login = () => {
             const { token, user } = response.data;
 
             // Store login information
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
+            setVoterSession(token, user);
 
             // Go to voter dashboard
             navigate("/dashboard");

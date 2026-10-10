@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
 import { jsPDF } from "jspdf";
 import api from "../services/api";
+import { getAdminToken } from "../services/authStorage";
 import "./AdminResults.css";
 
 function AdminResults() {
@@ -18,7 +19,7 @@ function AdminResults() {
 
     const authConfig = useCallback(() => ({
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getAdminToken()}`,
         },
     }), []);
 
@@ -118,7 +119,9 @@ function AdminResults() {
     useEffect(() => {
         if (!selectedElectionId) return;
 
-        const socket = io("http://localhost:5000");
+        const socketUrl =
+            import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+        const socket = io(socketUrl);
 
         socket.on("connect", () => {
             socket.emit("joinElection", selectedElectionId);

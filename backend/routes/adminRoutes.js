@@ -79,11 +79,6 @@ router.post("/candidates", createCandidate);
 
 // Results
 router.get(
-    "/elections/:electionId/candidates",
-    getCandidates
-);
-
-router.get(
     "/results/:electionId",
     getResults
 );

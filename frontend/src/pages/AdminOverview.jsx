@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { getAdminToken } from "../services/authStorage";
 
 function AdminOverview() {
     const [elections, setElections] = useState([]);
@@ -12,7 +13,7 @@ function AdminOverview() {
 
         const fetchElections = async () => {
             try {
-                const token = localStorage.getItem("token");
+                const token = getAdminToken();
 
                 const response = await api.get("/admin/elections", {
                     headers: {

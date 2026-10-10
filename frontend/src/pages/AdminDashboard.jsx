@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import api from "../services/api";
+import { getAdminToken } from "../services/authStorage";
 
 import { jsPDF } from "jspdf";
 
@@ -178,7 +179,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             await api.post(
 
@@ -270,7 +271,7 @@ const AdminDashboard = () => {
 
             setCandidatesError("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.get(`/admin/elections/${electionId}/candidates`, {
 
@@ -320,7 +321,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const imageUrl = candidateImageFile
 
@@ -464,7 +465,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const imageUrl = editCandidateImageFile
 
@@ -546,7 +547,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.delete(
 
@@ -604,7 +605,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.post(
 
@@ -690,7 +691,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.put(
 
@@ -794,7 +795,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.put(
 
@@ -866,7 +867,7 @@ const AdminDashboard = () => {
 
             setMessage("");
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.delete(
 
@@ -928,7 +929,7 @@ const AdminDashboard = () => {
 
         try {
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.get(
 
@@ -1030,7 +1031,7 @@ const AdminDashboard = () => {
 
         try {
 
-            const token = localStorage.getItem("token");
+            const token = getAdminToken();
 
             const response = await api.get(
 
@@ -1235,7 +1236,9 @@ const AdminDashboard = () => {
 
         fetchResults(selectedElectionId);
 
-        const socket = io("http://localhost:5000");
+        const socketUrl =
+            import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+        const socket = io(socketUrl);
 
         socket.on("connect", () => {
 

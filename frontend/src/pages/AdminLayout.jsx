@@ -1,6 +1,9 @@
 
-import { NavLink, Outlet } from "react-router-dom";
+
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { clearAdminSession } from "../services/authStorage";
 import "./AdminLayout.css";
+
 
 const navigation = [
     { label: "Overview", path: "/admin/dashboard", end: true },
@@ -12,6 +15,13 @@ const navigation = [
 ];
 
 function AdminLayout() {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        clearAdminSession();
+        navigate("/admin/login");
+    };
+
     return (
         <div className="admin-layout">
             <aside className="admin-layout-sidebar">
@@ -43,8 +53,16 @@ function AdminLayout() {
                 <div className="admin-layout-footer">
                     <span className="admin-layout-status-dot" />
                     Admin Workspace
+                    <button
+                        type="button"
+                        className="admin-layout-logout"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
                 </div>
             </aside>
+
 
             <div className="admin-layout-main">
                 <header className="admin-layout-header">

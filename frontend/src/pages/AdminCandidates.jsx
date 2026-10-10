@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
+import { getAdminToken } from "../services/authStorage";
 import "./AdminCandidates.css";
 
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
@@ -42,7 +43,7 @@ function AdminCandidates() {
     const canEditCandidates = selectedElection?.status === "upcoming";
 
     const authHeaders = () => ({
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getAdminToken()}`,
     });
 
     const fetchElections = useCallback(async () => {

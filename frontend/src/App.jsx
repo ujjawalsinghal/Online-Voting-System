@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import AdminLogin from "./pages/AdminLogin";
+import AdminRoute from "./pages/AdminRoute";
 import AdminOverview from "./pages/AdminOverview";
 import AdminLayout from "./pages/AdminLayout";
 import AdminElections from "./pages/AdminElections";
@@ -17,16 +18,27 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* Existing user routes */}
+                {/* Voter routes */}
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/dashboard" element={<Dashboard />} />
 
-                {/* Admin login remains separate */}
-                <Route path="/admin" element={<AdminLogin />} />
+                {/* Admin login — distinct path, no layout wrapper */}
+                <Route path="/admin/login" element={<AdminLogin />} />
 
-                {/* Shared admin layout and nested pages */}
-                <Route path="/admin" element={<AdminLayout />}>
+                {/* Admin layout — all nested pages require admin role.
+                    The AdminRoute guard redirects non-admin users to
+                    /admin/login before any page component mounts.
+                    Backend /api/admin/* routes independently enforce
+                    protect + adminOnly middleware as the real security layer. */}
+                <Route
+                    path="/admin"
+                    element={
+                        <AdminRoute>
+                            <AdminLayout />
+                        </AdminRoute>
+                    }
+                >
                     <Route
                         path="dashboard"
                         element={<AdminOverview />}
