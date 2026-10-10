@@ -6,6 +6,8 @@ import api from "../services/api";
 
 import { jsPDF } from "jspdf";
 
+import "./AdminDashboard.css";
+
 const AdminDashboard = () => {
 
     const [elections, setElections] = useState([]);
@@ -1165,7 +1167,7 @@ const AdminDashboard = () => {
 
         doc.setFont("helvetica", "normal");
 
-        results.forEach((candidate, index) => {
+        results.forEach((candidate) => {
             if (y > 270) {
                 doc.addPage();
                 y = 20;
@@ -1375,1490 +1377,1535 @@ const AdminDashboard = () => {
 
     // --------------------------------------------------
 
+
     return (
+        <div className="admin-dashboard">
+            <aside className="admin-sidebar">
+                <div className="admin-brand">
+                    <div className="admin-brand-icon">V</div>
+                    <div>
+                        <strong>VoteSphere</strong>
+                        <span>Election Management</span>
+                    </div>
+                </div>
 
-        <div>
+                <p className="admin-sidebar-label">WORKSPACE</p>
 
-            <h1>Admin Dashboard</h1>
+                <nav
+                    className="admin-sidebar-nav"
+                    aria-label="Admin dashboard sections"
+                >
+                    <a href="#dashboard-overview">Overview</a>
+                    <a href="#election-management-title">Elections</a>
+                    <a href="#create-election">Create Election</a>
+                    <a href="#add-candidate">Candidates</a>
+                    <a href="#eligible-voter">Eligible Voters</a>
+                    <a href="#update-schedule">Schedule</a>
+                    <a href="#election-results">Results</a>
+                </nav>
 
-            <div
+                <div className="admin-sidebar-footer">
+                    <span className="admin-status-dot" />
+                    Admin Workspace
+                </div>
+            </aside>
 
-                style={{
-
-                    display: "grid",
-
-                    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-
-                    gap: "16px",
-
-                    margin: "24px 0"
-
-                }}
-
-            >
-
-                {[
-
-                    {
-
-                        title: "Total Elections",
-
-                        count: totalElections,
-
-                        color: "#2563eb"
-
-                    },
-
-                    {
-
-                        title: "Active Elections",
-
-                        count: activeElections,
-
-                        color: "#16a34a"
-
-                    },
-
-                    {
-
-                        title: "Upcoming Elections",
-
-                        count: upcomingElections,
-
-                        color: "#d97706"
-
-                    },
-
-                    {
-
-                        title: "Completed Elections",
-
-                        count: completedElections,
-
-                        color: "#64748b"
-
-                    }
-
-                ].map((stat) => (
-
-                    <div
-
-                        key={stat.title}
-
-                        style={{
-
-                            padding: "20px",
-
-                            borderRadius: "12px",
-
-                            border: "1px solid #374151",
-
-                            borderTop: `4px solid ${stat.color}`,
-
-                            background: "#1f2937",
-
-                            color: "#f9fafb",
-
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-
-                            transition: "transform 0.2s ease"
-
-                        }}
-
-                        onMouseEnter={(e) => {
-
-                            e.target.style.transform = "translateY(-2px)";
-
-                        }}
-
-                        onMouseLeave={(e) => {
-
-                            e.target.style.transform = "translateY(0)";
-
-                        }}
-
-                    >
-
-                        <p style={{ color: "#d1d5db", margin: "0 0 10px" }}>
-
-                            {stat.title}
-
-                        </p>
-
-                        <h2 style={{ margin: 0, fontSize: "30px", color: "#ffffff" }}>
-
-                            {stat.count}
-
-                        </h2>
-
+            <div className="admin-main">
+                <header className="admin-topbar">
+                    <div>
+                        <span className="admin-topbar-eyebrow">
+                            ELECTION CONTROL CENTER
+                        </span>
+                        <h1>Admin Dashboard</h1>
                     </div>
 
-                ))}
+                    <div className="admin-topbar-badge">
+                        <span className="admin-status-dot" />
+                        Management Portal
+                    </div>
+                </header>
 
-            </div>
+                <main className="admin-content">
+                    <section id="dashboard-overview">
 
-            <nav
 
-                aria-label="Admin dashboard sections"
+                        <div
 
-                style={{
+                            style={{
 
-                    display: "flex",
+                                display: "grid",
 
-                    flexWrap: "wrap",
+                                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
 
-                    justifyContent: "center",
+                                gap: "16px",
 
-                    gap: "10px",
+                                margin: "24px 0"
 
-                    padding: "16px",
+                            }}
 
-                    marginBottom: "24px",
+                        >
 
-                    background: "#1f2937",
+                            {[
 
-                    borderRadius: "12px"
+                                {
 
-                }}
+                                    title: "Total Elections",
 
-            >
+                                    count: totalElections,
 
-                {[
+                                    color: "#2563eb"
 
-                    ["Create Election", "create-election"],
+                                },
 
-                    ["Add Candidate", "add-candidate"],
+                                {
 
-                    ["Eligible Voters", "eligible-voter"],
+                                    title: "Active Elections",
 
-                    ["Schedule", "update-schedule"],
+                                    count: activeElections,
 
-                    ["Results", "election-results"]
+                                    color: "#16a34a"
 
-                ].map(([label, id]) => (
+                                },
 
-                    <a
+                                {
 
-                        key={id}
+                                    title: "Upcoming Elections",
 
-                        href={`#${id}`}
+                                    count: upcomingElections,
 
-                        style={{
+                                    color: "#d97706"
 
-                            color: "#93c5fd",
+                                },
 
-                            padding: "8px 12px",
+                                {
 
-                            borderRadius: "6px",
+                                    title: "Completed Elections",
 
-                            textDecoration: "none",
+                                    count: completedElections,
 
-                            border: "1px solid #374151"
+                                    color: "#64748b"
 
-                        }}
+                                }
 
-                    >
+                            ].map((stat) => (
 
-                        {label}
+                                <div
 
-                    </a>
+                                    key={stat.title}
 
-                ))}
+                                    style={{
 
-            </nav>
+                                        padding: "20px",
 
-            {/* ==========================================
+                                        borderRadius: "12px",
+
+                                        border: "1px solid #374151",
+
+                                        borderTop: `4px solid ${stat.color}`,
+
+                                        background: "#1f2937",
+
+                                        color: "#f9fafb",
+
+                                        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+
+                                        transition: "transform 0.2s ease"
+
+                                    }}
+
+                                    onMouseEnter={(e) => {
+
+                                        e.target.style.transform = "translateY(-2px)";
+
+                                    }}
+
+                                    onMouseLeave={(e) => {
+
+                                        e.target.style.transform = "translateY(0)";
+
+                                    }}
+
+                                >
+
+                                    <p style={{ color: "#d1d5db", margin: "0 0 10px" }}>
+
+                                        {stat.title}
+
+                                    </p>
+
+                                    <h2 style={{ margin: 0, fontSize: "30px", color: "#ffffff" }}>
+
+                                        {stat.count}
+
+                                    </h2>
+
+                                </div>
+
+                            ))}
+
+                        </div>
+
+                        <nav
+
+                            aria-label="Admin dashboard sections"
+
+                            style={{
+
+                                display: "flex",
+
+                                flexWrap: "wrap",
+
+                                justifyContent: "center",
+
+                                gap: "10px",
+
+                                padding: "16px",
+
+                                marginBottom: "24px",
+
+                                background: "#1f2937",
+
+                                borderRadius: "12px"
+
+                            }}
+
+                        >
+
+                            {[
+
+                                ["Create Election", "create-election"],
+
+                                ["Add Candidate", "add-candidate"],
+
+                                ["Eligible Voters", "eligible-voter"],
+
+                                ["Schedule", "update-schedule"],
+
+                                ["Results", "election-results"]
+
+                            ].map(([label, id]) => (
+
+                                <a
+
+                                    key={id}
+
+                                    href={`#${id}`}
+
+                                    style={{
+
+                                        color: "#93c5fd",
+
+                                        padding: "8px 12px",
+
+                                        borderRadius: "6px",
+
+                                        textDecoration: "none",
+
+                                        border: "1px solid #374151"
+
+                                    }}
+
+                                >
+
+                                    {label}
+
+                                </a>
+
+                            ))}
+
+                        </nav>
+
+                        {/* ==========================================
 
                 CREATE ELECTION
 
             ========================================== */}
 
-            <h2 id="create-election">Create New Election</h2>
+                        <h2 id="create-election">Create New Election</h2>
 
-            <form onSubmit={handleCreateElection}>
+                        <form onSubmit={handleCreateElection}>
 
-                <div>
+                            <div>
 
-                    <label>
+                                <label>
 
-                        Election Title
+                                    Election Title
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        type="text"
+                                    type="text"
 
-                        value={title}
+                                    value={title}
 
-                        onChange={(e) =>
+                                    onChange={(e) =>
 
-                            setTitle(e.target.value)
+                                        setTitle(e.target.value)
 
-                        }
+                                    }
 
-                        placeholder="Enter election title"
+                                    placeholder="Enter election title"
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <div>
+                            <div>
 
-                    <label>
+                                <label>
 
-                        Description
+                                    Description
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <textarea
+                                <textarea
 
-                        value={description}
+                                    value={description}
 
-                        onChange={(e) =>
+                                    onChange={(e) =>
 
-                            setDescription(
+                                        setDescription(
 
-                                e.target.value
+                                            e.target.value
 
-                            )
+                                        )
 
-                        }
+                                    }
 
-                        placeholder="Enter election description"
+                                    placeholder="Enter election description"
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <div>
+                            <div>
 
-                    <label>
+                                <label>
 
-                        Start Time
+                                    Start Time
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        type="datetime-local"
+                                    type="datetime-local"
 
-                        value={startTime}
+                                    value={startTime}
 
-                        onChange={(e) =>
+                                    onChange={(e) =>
 
-                            setStartTime(
+                                        setStartTime(
 
-                                e.target.value
+                                            e.target.value
 
-                            )
+                                        )
 
-                        }
+                                    }
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <div>
+                            <div>
 
-                    <label>
+                                <label>
 
-                        End Time
+                                    End Time
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        type="datetime-local"
+                                    type="datetime-local"
 
-                        value={endTime}
+                                    value={endTime}
 
-                        onChange={(e) =>
+                                    onChange={(e) =>
 
-                            setEndTime(
+                                        setEndTime(
 
-                                e.target.value
+                                            e.target.value
 
-                            )
+                                        )
 
-                        }
+                                    }
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <button
+                            <button
 
-                    type="submit"
+                                type="submit"
 
-                    disabled={creatingElection}
+                                disabled={creatingElection}
 
-                >
+                            >
 
-                    {creatingElection
+                                {creatingElection
 
-                        ? "Creating..."
+                                    ? "Creating..."
 
-                        : "Create Election"}
+                                    : "Create Election"}
 
-                </button>
+                            </button>
 
-            </form>
+                        </form>
 
-            <hr />
+                        <hr />
 
-            {/* ==========================================
+                        {/* ==========================================
 
                 ADD CANDIDATE
 
             ========================================== */}
 
-            <h2 id="add-candidate">Add Candidate</h2>
+                        <h2 id="add-candidate">Add Candidate</h2>
 
-            <form onSubmit={handleAddCandidate}>
+                        <form onSubmit={handleAddCandidate}>
 
-                <div>
+                            <div>
 
-                    <label>
+                                <label>
 
-                        Candidate Name
+                                    Candidate Name
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        type="text"
+                                    type="text"
 
-                        value={candidateName}
+                                    value={candidateName}
 
-                        onChange={(e) =>
+                                    onChange={(e) =>
 
-                            setCandidateName(
+                                        setCandidateName(
 
-                                e.target.value
+                                            e.target.value
 
-                            )
+                                        )
 
-                        }
+                                    }
 
-                        placeholder="Enter candidate name"
+                                    placeholder="Enter candidate name"
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <div>
+                            <div>
 
-                    <label>
+                                <label>
 
-                        Candidate Description
+                                    Candidate Description
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <textarea
+                                <textarea
 
-                        value={candidateDescription}
+                                    value={candidateDescription}
 
-                        onChange={(e) =>
+                                    onChange={(e) =>
 
-                            setCandidateDescription(
+                                        setCandidateDescription(
 
-                                e.target.value
+                                            e.target.value
 
-                            )
+                                        )
 
-                        }
+                                    }
 
-                        placeholder="Enter candidate description"
+                                    placeholder="Enter candidate description"
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <div style={{ margin: "12px 0" }}>
+                            <div style={{ margin: "12px 0" }}>
 
-                    <label htmlFor="candidateImageFile">Candidate photo (optional; JPEG, PNG, or WebP, max 2 MB)</label>
+                                <label htmlFor="candidateImageFile">Candidate photo (optional; JPEG, PNG, or WebP, max 2 MB)</label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        id="candidateImageFile"
+                                    id="candidateImageFile"
 
-                        type="file"
+                                    type="file"
 
-                        accept="image/jpeg,image/png,image/webp"
+                                    accept="image/jpeg,image/png,image/webp"
 
-                        onChange={(e) => {
+                                    onChange={(e) => {
 
-                            const file = e.target.files?.[0] || null;
+                                        const file = e.target.files?.[0] || null;
 
-                            if (file && file.size > 2 * 1024 * 1024) {
+                                        if (file && file.size > 2 * 1024 * 1024) {
 
-                                setMessage("Image must be 2 MB or smaller.");
+                                            setMessage("Image must be 2 MB or smaller.");
 
-                                e.target.value = "";
+                                            e.target.value = "";
 
-                                setCandidateImageFile(null);
+                                            setCandidateImageFile(null);
 
-                                setCandidateImagePreview("");
+                                            setCandidateImagePreview("");
 
-                                return;
+                                            return;
 
-                            }
+                                        }
 
-                            if (file && !["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                                        if (file && !["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
 
-                                setMessage("Only JPEG, PNG, and WebP images are allowed.");
+                                            setMessage("Only JPEG, PNG, and WebP images are allowed.");
 
-                                e.target.value = "";
+                                            e.target.value = "";
 
-                                setCandidateImageFile(null);
+                                            setCandidateImageFile(null);
 
-                                setCandidateImagePreview("");
+                                            setCandidateImagePreview("");
 
-                                return;
+                                            return;
 
-                            }
+                                        }
 
-                            setMessage("");
+                                        setMessage("");
 
-                            setCandidateImageFile(file);
+                                        setCandidateImageFile(file);
 
-                            setCandidateImagePreview(file ? URL.createObjectURL(file) : "");
+                                        setCandidateImagePreview(file ? URL.createObjectURL(file) : "");
 
-                        }}
+                                    }}
 
-                    />
+                                />
 
-                    {candidateImagePreview && <img src={candidateImagePreview} alt="Candidate photo preview" style={{ display: "block", width: "140px", maxHeight: "140px", objectFit: "cover", marginTop: "10px", borderRadius: "8px" }} />}
+                                {candidateImagePreview && <img src={candidateImagePreview} alt="Candidate photo preview" style={{ display: "block", width: "140px", maxHeight: "140px", objectFit: "cover", marginTop: "10px", borderRadius: "8px" }} />}
 
-                </div>
+                            </div>
 
-                <button
+                            <button
 
-                    type="submit"
+                                type="submit"
 
-                    disabled={addingCandidate}
+                                disabled={addingCandidate}
 
-                >
+                            >
 
-                    {addingCandidate
+                                {addingCandidate
 
-                        ? "Adding..."
+                                    ? "Adding..."
 
-                        : "Add Candidate"}
+                                    : "Add Candidate"}
 
-                </button>
+                            </button>
 
-            </form>
+                        </form>
 
-            <section aria-labelledby="candidate-list-title" style={{ margin: "24px 0" }}>
+                        <section aria-labelledby="candidate-list-title" style={{ margin: "24px 0" }}>
 
-                <h3 id="candidate-list-title">Existing Candidates</h3>
+                            <h3 id="candidate-list-title">Existing Candidates</h3>
 
-                {!selectedElectionId ? (
+                            {!selectedElectionId ? (
 
-                    <p>Select an election to view its candidates.</p>
+                                <p>Select an election to view its candidates.</p>
 
-                ) : candidatesLoading ? (
+                            ) : candidatesLoading ? (
 
-                    <p role="status">Loading candidates...</p>
+                                <p role="status">Loading candidates...</p>
 
-                ) : candidatesError ? (
+                            ) : candidatesError ? (
 
-                    <p role="alert" style={{ color: "#dc2626" }}>{candidatesError}</p>
+                                <p role="alert" style={{ color: "#dc2626" }}>{candidatesError}</p>
 
-                ) : candidates.length === 0 ? (
+                            ) : candidates.length === 0 ? (
 
-                    <p>No candidates have been added to this election yet.</p>
+                                <p>No candidates have been added to this election yet.</p>
 
-                ) : (
+                            ) : (
 
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "14px", marginTop: "14px" }}>
+                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "14px", marginTop: "14px" }}>
 
-                        {candidates.map((candidate) => (
+                                    {candidates.map((candidate) => (
 
-                            <article key={candidate._id} style={{ padding: "16px", border: "1px solid #374151", borderRadius: "10px", background: "#1f2937", color: "#f9fafb" }}>
+                                        <article key={candidate._id} style={{ padding: "16px", border: "1px solid #374151", borderRadius: "10px", background: "#1f2937", color: "#f9fafb" }}>
 
-                                {candidate.image && <img src={candidate.image} alt={candidate.name} loading="lazy" style={{ width: "100%", maxHeight: "180px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} />}
+                                            {candidate.image && <img src={candidate.image} alt={candidate.name} loading="lazy" style={{ width: "100%", maxHeight: "180px", objectFit: "cover", borderRadius: "8px", marginBottom: "10px" }} />}
 
-                                {editingCandidateId === candidate._id ? (
+                                            {editingCandidateId === candidate._id ? (
 
-                                    <form onSubmit={handleUpdateCandidate}>
+                                                <form onSubmit={handleUpdateCandidate}>
 
-                                        <h4>Edit Candidate</h4>
+                                                    <h4>Edit Candidate</h4>
 
-                                        <label htmlFor={`edit-candidate-name-${candidate._id}`}>Name</label>
+                                                    <label htmlFor={`edit-candidate-name-${candidate._id}`}>Name</label>
 
-                                        <input id={`edit-candidate-name-${candidate._id}`} type="text" value={editCandidateName} onChange={(e) => setEditCandidateName(e.target.value)} maxLength={120} required style={{ width: "100%", boxSizing: "border-box", padding: "9px", margin: "6px 0 12px" }} />
+                                                    <input id={`edit-candidate-name-${candidate._id}`} type="text" value={editCandidateName} onChange={(e) => setEditCandidateName(e.target.value)} maxLength={120} required style={{ width: "100%", boxSizing: "border-box", padding: "9px", margin: "6px 0 12px" }} />
 
-                                        <label htmlFor={`edit-candidate-description-${candidate._id}`}>Description</label>
+                                                    <label htmlFor={`edit-candidate-description-${candidate._id}`}>Description</label>
 
-                                        <textarea id={`edit-candidate-description-${candidate._id}`} value={editCandidateDescription} onChange={(e) => setEditCandidateDescription(e.target.value)} rows={3} maxLength={2000} style={{ width: "100%", boxSizing: "border-box", padding: "9px", margin: "6px 0 12px" }} />
+                                                    <textarea id={`edit-candidate-description-${candidate._id}`} value={editCandidateDescription} onChange={(e) => setEditCandidateDescription(e.target.value)} rows={3} maxLength={2000} style={{ width: "100%", boxSizing: "border-box", padding: "9px", margin: "6px 0 12px" }} />
 
-                                        <label htmlFor={`edit-candidate-image-${candidate._id}`}>Image URL (optional)</label>
+                                                    <label htmlFor={`edit-candidate-image-${candidate._id}`}>Image URL (optional)</label>
 
 
-                                        <input id={`edit-candidate-image-${candidate._id}`} type="url" value={editCandidateImage} onChange={(e) => { setEditCandidateImage(e.target.value); setEditCandidateImageFile(null); }} placeholder="https://example.com/photo.jpg" style={{ width: "100%", boxSizing: "border-box", padding: "9px", margin: "6px 0 12px" }} />
+                                                    <input id={`edit-candidate-image-${candidate._id}`} type="url" value={editCandidateImage} onChange={(e) => { setEditCandidateImage(e.target.value); setEditCandidateImageFile(null); }} placeholder="https://example.com/photo.jpg" style={{ width: "100%", boxSizing: "border-box", padding: "9px", margin: "6px 0 12px" }} />
 
-                                        <label htmlFor={`edit-candidate-image-file-${candidate._id}`}>Or upload a new photo (JPEG, PNG, or WebP, max 2 MB)</label>
+                                                    <label htmlFor={`edit-candidate-image-file-${candidate._id}`}>Or upload a new photo (JPEG, PNG, or WebP, max 2 MB)</label>
 
-                                        <input
+                                                    <input
 
-                                            id={`edit-candidate-image-file-${candidate._id}`}
+                                                        id={`edit-candidate-image-file-${candidate._id}`}
 
-                                            type="file"
+                                                        type="file"
 
-                                            accept="image/jpeg,image/png,image/webp"
+                                                        accept="image/jpeg,image/png,image/webp"
 
-                                            onChange={(e) => {
+                                                        onChange={(e) => {
 
-                                                const file = e.target.files?.[0] || null;
+                                                            const file = e.target.files?.[0] || null;
 
-                                                if (file && file.size > 2 * 1024 * 1024) {
+                                                            if (file && file.size > 2 * 1024 * 1024) {
 
-                                                    setMessage("Image must be 2 MB or smaller.");
+                                                                setMessage("Image must be 2 MB or smaller.");
 
-                                                    e.target.value = "";
+                                                                e.target.value = "";
 
-                                                    setEditCandidateImageFile(null);
+                                                                setEditCandidateImageFile(null);
 
-                                                    setEditCandidateImagePreview("");
+                                                                setEditCandidateImagePreview("");
 
-                                                    return;
+                                                                return;
 
-                                                }
+                                                            }
 
-                                                if (file && !["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                                                            if (file && !["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
 
-                                                    setMessage("Only JPEG, PNG, and WebP images are allowed.");
+                                                                setMessage("Only JPEG, PNG, and WebP images are allowed.");
 
-                                                    e.target.value = "";
+                                                                e.target.value = "";
 
-                                                    setEditCandidateImageFile(null);
+                                                                setEditCandidateImageFile(null);
 
-                                                    setEditCandidateImagePreview("");
+                                                                setEditCandidateImagePreview("");
 
-                                                    return;
+                                                                return;
 
-                                                }
+                                                            }
 
-                                                setMessage("");
+                                                            setMessage("");
 
-                                                setEditCandidateImageFile(file);
+                                                            setEditCandidateImageFile(file);
 
-                                                setEditCandidateImagePreview(file ? URL.createObjectURL(file) : "");
+                                                            setEditCandidateImagePreview(file ? URL.createObjectURL(file) : "");
 
-                                            }}
+                                                        }}
 
-                                        />
+                                                    />
 
-                                        {(editCandidateImagePreview || editCandidateImage) && <img src={editCandidateImagePreview || editCandidateImage} alt="Candidate photo preview" style={{ display: "block", width: "140px", maxHeight: "140px", objectFit: "cover", margin: "10px 0", borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />}
+                                                    {(editCandidateImagePreview || editCandidateImage) && <img src={editCandidateImagePreview || editCandidateImage} alt="Candidate photo preview" style={{ display: "block", width: "140px", maxHeight: "140px", objectFit: "cover", margin: "10px 0", borderRadius: "8px" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />}
 
-                                        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
 
-                                            <button type="submit" disabled={savingCandidate}>{savingCandidate ? "Saving..." : "Save Candidate"}</button>
+                                                        <button type="submit" disabled={savingCandidate}>{savingCandidate ? "Saving..." : "Save Candidate"}</button>
 
-                                            <button type="button" onClick={handleCancelEditCandidate} disabled={savingCandidate}>Cancel</button>
+                                                        <button type="button" onClick={handleCancelEditCandidate} disabled={savingCandidate}>Cancel</button>
 
-                                        </div>
+                                                    </div>
 
-                                    </form>
+                                                </form>
 
-                                ) : (
+                                            ) : (
 
-                                    <>
+                                                <>
 
-                                        <h4 style={{ margin: "0 0 8px" }}>{candidate.name}</h4>
+                                                    <h4 style={{ margin: "0 0 8px" }}>{candidate.name}</h4>
 
-                                        <p style={{ margin: 0, color: "#d1d5db", whiteSpace: "pre-wrap" }}>{candidate.description || "No description provided."}</p>
+                                                    <p style={{ margin: 0, color: "#d1d5db", whiteSpace: "pre-wrap" }}>{candidate.description || "No description provided."}</p>
 
-                                        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "14px" }}>
+                                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "14px" }}>
 
-                                            <button type="button" onClick={() => handleStartEditCandidate(candidate)} disabled={elections.find((item) => item._id === selectedElectionId)?.status !== "upcoming" || Boolean(deletingCandidateId)} title="Only candidates in upcoming elections can be edited">Edit</button>
+                                                        <button type="button" onClick={() => handleStartEditCandidate(candidate)} disabled={elections.find((item) => item._id === selectedElectionId)?.status !== "upcoming" || Boolean(deletingCandidateId)} title="Only candidates in upcoming elections can be edited">Edit</button>
 
-                                            <button type="button" onClick={() => handleDeleteCandidate(candidate)} disabled={elections.find((item) => item._id === selectedElectionId)?.status !== "upcoming" || Boolean(deletingCandidateId)} style={{ background: "#991b1b", color: "#fff" }} title="Only candidates in upcoming elections can be deleted">{deletingCandidateId === candidate._id ? "Deleting..." : "Delete"}</button>
+                                                        <button type="button" onClick={() => handleDeleteCandidate(candidate)} disabled={elections.find((item) => item._id === selectedElectionId)?.status !== "upcoming" || Boolean(deletingCandidateId)} style={{ background: "#991b1b", color: "#fff" }} title="Only candidates in upcoming elections can be deleted">{deletingCandidateId === candidate._id ? "Deleting..." : "Delete"}</button>
 
-                                        </div>
+                                                    </div>
 
-                                    </>
+                                                </>
 
-                                )}
+                                            )}
 
-                            </article>
+                                        </article>
 
-                        ))}
+                                    ))}
 
-                    </div>
+                                </div>
 
-                )}
+                            )}
 
-                {selectedElectionId && !candidatesLoading && <button type="button" onClick={() => fetchCandidates(selectedElectionId)} style={{ marginTop: "12px" }}>Refresh Candidates</button>}
+                            {selectedElectionId && !candidatesLoading && <button type="button" onClick={() => fetchCandidates(selectedElectionId)} style={{ marginTop: "12px" }}>Refresh Candidates</button>}
 
-            </section>
+                        </section>
 
-            <hr />
+                        <hr />
 
-            {/* ==========================================
+                        {/* ==========================================
 
     ELIGIBLE VOTER MANAGEMENT
 
 \========================================== */}
 
-            <hr />
+                        <hr />
 
-            <h2 id="eligible-voter">Register Eligible Voter</h2>
+                        <h2 id="eligible-voter">Register Eligible Voter</h2>
 
-            <p>
+                        <p>
 
-                Add a student's details to the approved-voter registry.
+                            Add a student's details to the approved-voter registry.
 
-                The student can then create their voter account.
+                            The student can then create their voter account.
 
-            </p>
+                        </p>
 
-            <form onSubmit={handleAddEligibleVoter}>
+                        <form onSubmit={handleAddEligibleVoter}>
 
-                <div>
+                            <div>
 
-                    <label htmlFor="eligibleName">
+                                <label htmlFor="eligibleName">
 
-                        Student Name
+                                    Student Name
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        id="eligibleName"
+                                    id="eligibleName"
 
-                        type="text"
+                                    type="text"
 
-                        value={eligibleName}
+                                    value={eligibleName}
 
-                        onChange={(e) => setEligibleName(e.target.value)}
+                                    onChange={(e) => setEligibleName(e.target.value)}
 
-                        placeholder="Enter student name"
+                                    placeholder="Enter student name"
 
-                        required
+                                    required
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <div>
+                            <div>
 
-                    <label htmlFor="eligibleStudentId">
+                                <label htmlFor="eligibleStudentId">
 
-                        Student ID
+                                    Student ID
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        id="eligibleStudentId"
+                                    id="eligibleStudentId"
 
-                        type="text"
+                                    type="text"
 
-                        value={eligibleStudentId}
+                                    value={eligibleStudentId}
 
-                        onChange={(e) => setEligibleStudentId(e.target.value)}
+                                    onChange={(e) => setEligibleStudentId(e.target.value)}
 
-                        placeholder="Enter student ID"
+                                    placeholder="Enter student ID"
 
-                        required
+                                    required
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <button
+                            <button
 
-                    type="submit"
+                                type="submit"
 
-                    disabled={addingEligibleVoter}
+                                disabled={addingEligibleVoter}
 
-                >
+                            >
 
-                    {addingEligibleVoter
+                                {addingEligibleVoter
 
-                        ? "Adding Student..."
+                                    ? "Adding Student..."
 
-                        : "Add Eligible Voter"}
+                                    : "Add Eligible Voter"}
 
-                </button>
+                            </button>
 
-            </form>
+                        </form>
 
-            {/* ELECTION MANAGEMENT CARDS */}
+                        {/* ELECTION MANAGEMENT CARDS */}
 
-            <section aria-labelledby="election-management-title" style={{ margin: "28px 0" }}>
+                        <section aria-labelledby="election-management-title" style={{ margin: "28px 0" }}>
 
-                <h2 id="election-management-title">Election Management</h2>
+                            <h2 id="election-management-title">Election Management</h2>
 
-                <p>Review election schedules and select an election to manage its schedule or view results.</p>
+                            <p>Review election schedules and select an election to manage its schedule or view results.</p>
 
-                <div
-
-                    style={{
-
-                        display: "grid",
-
-                        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-
-                        gap: "16px"
-
-                    }}
-
-                >
-
-                    {elections.map((item) => {
-
-                        const statusColor =
-
-                            item.status === "active"
-
-                                ? "#16a34a"
-
-                                : item.status === "upcoming"
-
-                                    ? "#d97706"
-
-                                    : "#94a3b8";
-
-                        return (
-
-                            <article
-
-                                key={item._id}
+                            <div
 
                                 style={{
 
-                                    padding: "18px",
+                                    display: "grid",
 
-                                    border: "1px solid #374151",
+                                    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+
+                                    gap: "16px"
+
+                                }}
+
+                            >
+
+                                {elections.map((item) => {
+
+                                    const statusColor =
+
+                                        item.status === "active"
+
+                                            ? "#16a34a"
+
+                                            : item.status === "upcoming"
+
+                                                ? "#d97706"
+
+                                                : "#94a3b8";
+
+                                    return (
+
+                                        <article
+
+                                            key={item._id}
+
+                                            style={{
+
+                                                padding: "18px",
+
+                                                border: "1px solid #374151",
+
+                                                borderRadius: "12px",
+
+                                                background: "#1f2937",
+
+                                                color: "#f9fafb",
+
+                                                display: "flex",
+
+                                                flexDirection: "column",
+
+                                                gap: "10px"
+
+                                            }}
+
+                                        >
+
+                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "12px" }}>
+
+                                                <h3 style={{ margin: 0 }}>{item.title}</h3>
+
+                                                <span
+
+                                                    style={{
+
+                                                        background: statusColor,
+
+                                                        color: "#ffffff",
+
+                                                        borderRadius: "999px",
+
+                                                        padding: "4px 9px",
+
+                                                        fontSize: "12px",
+
+                                                        whiteSpace: "nowrap"
+
+                                                    }}
+
+                                                >
+
+                                                    {item.status}
+
+                                                </span>
+
+                                            </div>
+
+                                            <p style={{ margin: 0, color: "#d1d5db" }}>
+
+                                                {item.description || "No description provided."}
+
+                                            </p>
+
+                                            <div style={{ fontSize: "14px", color: "#cbd5e1" }}>
+
+                                                <p style={{ margin: "4px 0" }}>
+
+                                                    <strong>Starts:</strong>{" "}
+
+                                                    {item.startTime
+
+                                                        ? new Date(item.startTime).toLocaleString()
+
+                                                        : "Not set"}
+
+                                                </p>
+
+                                                <p style={{ margin: "4px 0" }}>
+
+                                                    <strong>Ends:</strong>{" "}
+
+                                                    {item.endTime
+
+                                                        ? new Date(item.endTime).toLocaleString()
+
+                                                        : "Not set"}
+
+                                                </p>
+
+                                            </div>
+
+                                            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "auto" }}>
+
+                                                <button
+
+                                                    type="button"
+
+                                                    onClick={() => {
+
+                                                        setSelectedElectionId(item._id);
+
+                                                        setLoading(true);
+
+                                                        setMessage("");
+
+                                                        document.getElementById("update-schedule")?.scrollIntoView({
+
+                                                            behavior: "smooth",
+
+                                                            block: "start"
+
+                                                        });
+
+                                                    }}
+
+                                                    style={{
+
+                                                        padding: "9px 12px",
+
+                                                        border: "1px solid #60a5fa",
+
+                                                        borderRadius: "7px",
+
+                                                        background: "#1d4ed8",
+
+                                                        color: "#ffffff",
+
+                                                        cursor: "pointer"
+
+                                                    }}
+
+                                                >
+
+                                                    Select to Manage
+
+                                                </button>
+
+                                                <button
+
+                                                    type="button"
+
+                                                    onClick={() => handleEditElection(item)}
+
+                                                    disabled={item.status !== "upcoming"}
+
+                                                    title={item.status !== "upcoming" ? "Only upcoming elections can be edited" : "Edit election title and description"}
+
+                                                    style={{
+
+                                                        padding: "9px 12px",
+
+                                                        border: "1px solid #fbbf24",
+
+                                                        borderRadius: "7px",
+
+                                                        background: item.status === "upcoming" ? "#92400e" : "#4b5563",
+
+                                                        color: "#ffffff",
+
+                                                        cursor: item.status === "upcoming" ? "pointer" : "not-allowed",
+
+                                                        opacity: item.status === "upcoming" ? 1 : 0.65
+
+                                                    }}
+
+                                                >
+
+                                                    Edit Election
+
+                                                </button>
+
+                                                <button
+
+                                                    type="button"
+
+                                                    onClick={() => {
+
+                                                        setSelectedElectionId(item._id);
+
+                                                        setCandidateName("");
+
+                                                        setCandidateDescription("");
+
+                                                        setCandidateImageFile(null);
+
+                                                        setMessage("");
+
+                                                        document.getElementById("add-candidate")?.scrollIntoView({
+
+                                                            behavior: "smooth",
+
+                                                            block: "start"
+
+                                                        });
+
+                                                    }}
+
+                                                    style={{
+
+                                                        padding: "9px 12px",
+
+                                                        border: "1px solid #34d399",
+
+                                                        borderRadius: "7px",
+
+                                                        background: "#065f46",
+
+                                                        color: "#ffffff",
+
+                                                        cursor: "pointer"
+
+                                                    }}
+
+                                                >
+
+                                                    Manage Candidates
+
+                                                </button>
+
+                                                <button
+
+                                                    type="button"
+
+                                                    onClick={() => {
+
+                                                        setSelectedElectionId(item._id);
+
+                                                        setMessage("");
+
+                                                        fetchResults(item._id);
+
+                                                        document.getElementById("election-results")?.scrollIntoView({
+
+                                                            behavior: "smooth",
+
+                                                            block: "start"
+
+                                                        });
+
+                                                    }}
+
+                                                    style={{
+
+                                                        padding: "9px 12px",
+
+                                                        border: "1px solid #c4b5fd",
+
+                                                        borderRadius: "7px",
+
+                                                        background: "#5b21b6",
+
+                                                        color: "#ffffff",
+
+                                                        cursor: "pointer"
+
+                                                    }}
+
+                                                >
+
+                                                    View Results
+
+                                                </button>
+
+                                            </div>
+
+                                        </article>
+
+                                    );
+
+                                })}
+
+                            </div>
+
+                        </section>
+
+                        {editingElectionId && (
+
+                            <section
+
+                                aria-labelledby="edit-election-title"
+
+                                style={{
+
+                                    margin: "24px 0",
+
+                                    padding: "20px",
+
+                                    border: "1px solid #fbbf24",
 
                                     borderRadius: "12px",
 
                                     background: "#1f2937",
 
-                                    color: "#f9fafb",
-
-                                    display: "flex",
-
-                                    flexDirection: "column",
-
-                                    gap: "10px"
+                                    color: "#f9fafb"
 
                                 }}
 
                             >
 
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "12px" }}>
+                                <h2 id="edit-election-title">Edit Election Details</h2>
 
-                                    <h3 style={{ margin: 0 }}>{item.title}</h3>
+                                <p>Update the title and description of this upcoming election.</p>
 
-                                    <span
+                                <form onSubmit={handleSaveElectionDetails}>
 
-                                        style={{
+                                    <div style={{ marginBottom: "14px" }}>
 
-                                            background: statusColor,
+                                        <label htmlFor="editElectionTitle">Election Title</label>
 
-                                            color: "#ffffff",
+                                        <br />
 
-                                            borderRadius: "999px",
+                                        <input
 
-                                            padding: "4px 9px",
+                                            id="editElectionTitle"
 
-                                            fontSize: "12px",
+                                            type="text"
 
-                                            whiteSpace: "nowrap"
+                                            value={editTitle}
 
-                                        }}
+                                            onChange={(e) => setEditTitle(e.target.value)}
 
-                                    >
+                                            maxLength={150}
 
-                                        {item.status}
+                                            required
 
-                                    </span>
+                                            style={{ width: "100%", maxWidth: "560px", padding: "10px", boxSizing: "border-box" }}
 
-                                </div>
+                                        />
 
-                                <p style={{ margin: 0, color: "#d1d5db" }}>
+                                    </div>
 
-                                    {item.description || "No description provided."}
+                                    <div style={{ marginBottom: "14px" }}>
 
-                                </p>
+                                        <label htmlFor="editElectionDescription">Description</label>
 
-                                <div style={{ fontSize: "14px", color: "#cbd5e1" }}>
+                                        <br />
 
-                                    <p style={{ margin: "4px 0" }}>
+                                        <textarea
 
-                                        <strong>Starts:</strong>{" "}
+                                            id="editElectionDescription"
 
-                                        {item.startTime
+                                            value={editDescription}
 
-                                            ? new Date(item.startTime).toLocaleString()
+                                            onChange={(e) => setEditDescription(e.target.value)}
 
-                                            : "Not set"}
+                                            rows={4}
 
-                                    </p>
+                                            maxLength={2000}
 
-                                    <p style={{ margin: "4px 0" }}>
+                                            style={{ width: "100%", maxWidth: "560px", padding: "10px", boxSizing: "border-box" }}
 
-                                        <strong>Ends:</strong>{" "}
+                                        />
 
-                                        {item.endTime
+                                    </div>
 
-                                            ? new Date(item.endTime).toLocaleString()
+                                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
 
-                                            : "Not set"}
+                                        <button type="submit" disabled={savingElectionDetails}>
 
-                                    </p>
+                                            {savingElectionDetails ? "Saving..." : "Save Changes"}
 
-                                </div>
+                                        </button>
 
-                                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "auto" }}>
+                                        <button
 
-                                    <button
+                                            type="button"
 
-                                        type="button"
+                                            disabled={savingElectionDetails}
 
-                                        onClick={() => {
+                                            onClick={() => {
 
-                                            setSelectedElectionId(item._id);
+                                                setEditingElectionId("");
 
-                                            setLoading(true);
+                                                setEditTitle("");
 
-                                            setMessage("");
+                                                setEditDescription("");
 
-                                            document.getElementById("update-schedule")?.scrollIntoView({
+                                                setMessage("");
 
-                                                behavior: "smooth",
+                                            }}
 
-                                                block: "start"
+                                        >
 
-                                            });
+                                            Cancel
 
-                                        }}
+                                        </button>
 
-                                        style={{
+                                    </div>
 
-                                            padding: "9px 12px",
+                                </form>
 
-                                            border: "1px solid #60a5fa",
+                            </section>
 
-                                            borderRadius: "7px",
+                        )}
 
-                                            background: "#1d4ed8",
-
-                                            color: "#ffffff",
-
-                                            cursor: "pointer"
-
-                                        }}
-
-                                    >
-
-                                        Select to Manage
-
-                                    </button>
-
-                                    <button
-
-                                        type="button"
-
-                                        onClick={() => handleEditElection(item)}
-
-                                        disabled={item.status !== "upcoming"}
-
-                                        title={item.status !== "upcoming" ? "Only upcoming elections can be edited" : "Edit election title and description"}
-
-                                        style={{
-
-                                            padding: "9px 12px",
-
-                                            border: "1px solid #fbbf24",
-
-                                            borderRadius: "7px",
-
-                                            background: item.status === "upcoming" ? "#92400e" : "#4b5563",
-
-                                            color: "#ffffff",
-
-                                            cursor: item.status === "upcoming" ? "pointer" : "not-allowed",
-
-                                            opacity: item.status === "upcoming" ? 1 : 0.65
-
-                                        }}
-
-                                    >
-
-                                        Edit Election
-
-                                    </button>
-
-                                    <button
-
-                                        type="button"
-
-                                        onClick={() => {
-
-                                            setSelectedElectionId(item._id);
-
-                                            setCandidateName("");
-
-                                            setCandidateDescription("");
-
-                                            setCandidateImageFile(null);
-
-                                            setMessage("");
-
-                                            document.getElementById("add-candidate")?.scrollIntoView({
-
-                                                behavior: "smooth",
-
-                                                block: "start"
-
-                                            });
-
-                                        }}
-
-                                        style={{
-
-                                            padding: "9px 12px",
-
-                                            border: "1px solid #34d399",
-
-                                            borderRadius: "7px",
-
-                                            background: "#065f46",
-
-                                            color: "#ffffff",
-
-                                            cursor: "pointer"
-
-                                        }}
-
-                                    >
-
-                                        Manage Candidates
-
-                                    </button>
-
-                                    <button
-
-                                        type="button"
-
-                                        onClick={() => {
-
-                                            setSelectedElectionId(item._id);
-
-                                            setMessage("");
-
-                                            fetchResults(item._id);
-
-                                            document.getElementById("election-results")?.scrollIntoView({
-
-                                                behavior: "smooth",
-
-                                                block: "start"
-
-                                            });
-
-                                        }}
-
-                                        style={{
-
-                                            padding: "9px 12px",
-
-                                            border: "1px solid #c4b5fd",
-
-                                            borderRadius: "7px",
-
-                                            background: "#5b21b6",
-
-                                            color: "#ffffff",
-
-                                            cursor: "pointer"
-
-                                        }}
-
-                                    >
-
-                                        View Results
-
-                                    </button>
-
-                                </div>
-
-                            </article>
-
-                        );
-
-                    })}
-
-                </div>
-
-            </section>
-
-            {editingElectionId && (
-
-                <section
-
-                    aria-labelledby="edit-election-title"
-
-                    style={{
-
-                        margin: "24px 0",
-
-                        padding: "20px",
-
-                        border: "1px solid #fbbf24",
-
-                        borderRadius: "12px",
-
-                        background: "#1f2937",
-
-                        color: "#f9fafb"
-
-                    }}
-
-                >
-
-                    <h2 id="edit-election-title">Edit Election Details</h2>
-
-                    <p>Update the title and description of this upcoming election.</p>
-
-                    <form onSubmit={handleSaveElectionDetails}>
-
-                        <div style={{ marginBottom: "14px" }}>
-
-                            <label htmlFor="editElectionTitle">Election Title</label>
-
-                            <br />
-
-                            <input
-
-                                id="editElectionTitle"
-
-                                type="text"
-
-                                value={editTitle}
-
-                                onChange={(e) => setEditTitle(e.target.value)}
-
-                                maxLength={150}
-
-                                required
-
-                                style={{ width: "100%", maxWidth: "560px", padding: "10px", boxSizing: "border-box" }}
-
-                            />
-
-                        </div>
-
-                        <div style={{ marginBottom: "14px" }}>
-
-                            <label htmlFor="editElectionDescription">Description</label>
-
-                            <br />
-
-                            <textarea
-
-                                id="editElectionDescription"
-
-                                value={editDescription}
-
-                                onChange={(e) => setEditDescription(e.target.value)}
-
-                                rows={4}
-
-                                maxLength={2000}
-
-                                style={{ width: "100%", maxWidth: "560px", padding: "10px", boxSizing: "border-box" }}
-
-                            />
-
-                        </div>
-
-                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-
-                            <button type="submit" disabled={savingElectionDetails}>
-
-                                {savingElectionDetails ? "Saving..." : "Save Changes"}
-
-                            </button>
-
-                            <button
-
-                                type="button"
-
-                                disabled={savingElectionDetails}
-
-                                onClick={() => {
-
-                                    setEditingElectionId("");
-
-                                    setEditTitle("");
-
-                                    setEditDescription("");
-
-                                    setMessage("");
-
-                                }}
-
-                            >
-
-                                Cancel
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </section>
-
-            )}
-
-            {/* ==========================================
+                        {/* ==========================================
 
                 SELECT ELECTION
 
             ========================================== */}
 
-            <div>
+                        <div>
 
-                <label>
+                            <label>
 
-                    <strong>
+                                <strong>
 
-                        Select Election:
+                                    Select Election:
 
-                    </strong>
+                                </strong>
 
-                </label>
+                            </label>
 
-                <br />
+                            <br />
 
-                <select
+                            <select
 
-                    value={selectedElectionId}
+                                value={selectedElectionId}
 
-                    onChange={handleElectionChange}
+                                onChange={handleElectionChange}
 
-                >
+                            >
 
-                    <option value="">
+                                <option value="">
 
-                        Select an election
+                                    Select an election
 
-                    </option>
+                                </option>
 
-                    {elections.map((item) => (
+                                {elections.map((item) => (
 
-                        <option
+                                    <option
 
-                            key={item._id}
+                                        key={item._id}
 
-                            value={item._id}
+                                        value={item._id}
 
-                        >
+                                    >
 
-                            {item.title} — {item.status}
+                                        {item.title} — {item.status}
 
-                        </option>
+                                    </option>
 
-                    ))}
+                                ))}
 
-                </select>
+                            </select>
 
-            </div>
+                        </div>
 
-            <hr />
+                        <hr />
 
-            <hr />
+                        <hr />
 
-            {/* UPDATE ELECTION SCHEDULE */}
+                        {/* UPDATE ELECTION SCHEDULE */}
 
-            <h2 id="update-schedule">Update Election Schedule</h2>
+                        <h2 id="update-schedule">Update Election Schedule</h2>
 
-            <p>
+                        <p>
 
-                Select an election above, then update its start and end time.
+                            Select an election above, then update its start and end time.
 
-            </p>
+                        </p>
 
-            <form onSubmit={handleUpdateSchedule}>
+                        <form onSubmit={handleUpdateSchedule}>
 
-                <div>
+                            <div>
 
-                    <label htmlFor="editStartTime">
+                                <label htmlFor="editStartTime">
 
-                        New Start Time
+                                    New Start Time
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        id="editStartTime"
+                                    id="editStartTime"
 
-                        type="datetime-local"
+                                    type="datetime-local"
 
-                        value={editStartTime}
+                                    value={editStartTime}
 
-                        onChange={(e) => setEditStartTime(e.target.value)}
+                                    onChange={(e) => setEditStartTime(e.target.value)}
 
-                        required
+                                    required
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <div>
+                            <div>
 
-                    <label htmlFor="editEndTime">
+                                <label htmlFor="editEndTime">
 
-                        New End Time
+                                    New End Time
 
-                    </label>
+                                </label>
 
-                    <br />
+                                <br />
 
-                    <input
+                                <input
 
-                        id="editEndTime"
+                                    id="editEndTime"
 
-                        type="datetime-local"
+                                    type="datetime-local"
 
-                        value={editEndTime}
+                                    value={editEndTime}
 
-                        onChange={(e) => setEditEndTime(e.target.value)}
+                                    onChange={(e) => setEditEndTime(e.target.value)}
 
-                        required
+                                    required
 
-                    />
+                                />
 
-                </div>
+                            </div>
 
-                <br />
+                            <br />
 
-                <button
+                            <button
 
-                    type="submit"
+                                type="submit"
 
-                    disabled={updatingSchedule || !selectedElectionId}
+                                disabled={updatingSchedule || !selectedElectionId}
 
-                >
+                            >
 
-                    {updatingSchedule
+                                {updatingSchedule
 
-                        ? "Updating Schedule..."
+                                    ? "Updating Schedule..."
 
-                        : "Update Schedule"}
+                                    : "Update Schedule"}
 
-                </button>
+                            </button>
 
-            </form>
+                        </form>
 
-            <hr />
+                        <hr />
 
-            {/* ==========================================
+                        {/* ==========================================
 
                 ELECTION RESULTS
 
             ========================================== */}
 
-            {election && (
+                        {election && (
 
-                <>
+                            <>
 
-                    <h2>
+                                <h2>
 
-                        {election.title}
+                                    {election.title}
 
-                    </h2>
+                                </h2>
 
-                    <h3>
+                                <h3>
 
-                        Status: {election.status}
+                                    Status: {election.status}
 
-                    </h3>
+                                </h3>
 
-                    <h3>
+                                <h3>
 
-                        Total Votes: {totalVotes}
+                                    Total Votes: {totalVotes}
 
-                    </h3>
+                                </h3>
 
-                    <button
+                                <button
 
-                        type="button"
+                                    type="button"
 
-                        onClick={handleDeleteElection}
+                                    onClick={handleDeleteElection}
 
-                        disabled={!selectedElectionId}
+                                    disabled={!selectedElectionId}
 
-                        style={{ margin: "10px" }}
+                                    style={{ margin: "10px" }}
 
-                    >
+                                >
 
-                        Delete Selected Election
+                                    Delete Selected Election
 
-                    </button>
+                                </button>
 
-                    <hr />
+                                <hr />
 
-                    <hr />
+                                <hr />
 
-                    <h2 id="election-results">
+                                <h2 id="election-results">
 
-                        Election Results
+                                    Election Results
 
-                    </h2>
+                                </h2>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "12px", margin: "16px 0" }}>
-                        <div style={{ padding: "16px", borderRadius: "10px", background: "#1f2937", color: "#f9fafb", border: "1px solid #374151" }}>
-                            <p style={{ margin: 0, color: "#cbd5e1" }}>Total votes</p>
-                            <strong style={{ display: "block", fontSize: "28px", marginTop: "6px" }}>{totalVotes}</strong>
-                        </div>
-                        <div style={{ padding: "16px", borderRadius: "10px", background: "#1f2937", color: "#f9fafb", border: "1px solid #374151" }}>
-                            <p style={{ margin: 0, color: "#cbd5e1" }}>Candidates</p>
-                            <strong style={{ display: "block", fontSize: "28px", marginTop: "6px" }}>{candidates.length}</strong>
-                        </div>
-                        <div style={{ padding: "16px", borderRadius: "10px", background: "#1f2937", color: "#f9fafb", border: "1px solid #374151" }}>
-                            <p style={{ margin: 0, color: "#cbd5e1" }}>Leading candidate</p>
-                            <strong style={{ display: "block", fontSize: "20px", marginTop: "6px", overflowWrap: "anywhere" }}>{leadingCandidate ? leadingCandidate.candidateName : "No votes yet"}</strong>
-                            {leadingCandidate && <span style={{ color: "#cbd5e1", fontSize: "14px" }}>{leadingCandidate.votes} vote{leadingCandidate.votes === 1 ? "" : "s"}</span>}
-                        </div>
-                    </div>
+                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "12px", margin: "16px 0" }}>
+                                    <div style={{ padding: "16px", borderRadius: "10px", background: "#1f2937", color: "#f9fafb", border: "1px solid #374151" }}>
+                                        <p style={{ margin: 0, color: "#cbd5e1" }}>Total votes</p>
+                                        <strong style={{ display: "block", fontSize: "28px", marginTop: "6px" }}>{totalVotes}</strong>
+                                    </div>
+                                    <div style={{ padding: "16px", borderRadius: "10px", background: "#1f2937", color: "#f9fafb", border: "1px solid #374151" }}>
+                                        <p style={{ margin: 0, color: "#cbd5e1" }}>Candidates</p>
+                                        <strong style={{ display: "block", fontSize: "28px", marginTop: "6px" }}>{candidates.length}</strong>
+                                    </div>
+                                    <div style={{ padding: "16px", borderRadius: "10px", background: "#1f2937", color: "#f9fafb", border: "1px solid #374151" }}>
+                                        <p style={{ margin: 0, color: "#cbd5e1" }}>Leading candidate</p>
+                                        <strong style={{ display: "block", fontSize: "20px", marginTop: "6px", overflowWrap: "anywhere" }}>{leadingCandidate ? leadingCandidate.candidateName : "No votes yet"}</strong>
+                                        {leadingCandidate && <span style={{ color: "#cbd5e1", fontSize: "14px" }}>{leadingCandidate.votes} vote{leadingCandidate.votes === 1 ? "" : "s"}</span>}
+                                    </div>
+                                </div>
 
-                    <h3>Candidate-wise Results</h3>
-                    {candidates.length === 0 ? (
-                        <p>No candidates have been added to this election yet.</p>
-                    ) : (
-                        <div style={{ display: "grid", gap: "16px", margin: "16px 0" }}>
-                            {chartResults.map((candidate) => {
-                                const percentage = totalVotes > 0
-                                    ? (candidate.votes / totalVotes) * 100
-                                    : 0;
-                                return (
-                                    <article key={candidate.candidateId} style={{ padding: "16px", border: "1px solid #374151", borderRadius: "10px", background: "#1f2937", color: "#f9fafb" }}>
-                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "12px", flexWrap: "wrap", marginBottom: "10px" }}>
-                                            <strong style={{ overflowWrap: "anywhere" }}>{candidate.candidateName}</strong>
-                                            <span>{candidate.votes} vote{candidate.votes === 1 ? "" : "s"} · {percentage.toFixed(1)}%</span>
-                                        </div>
-                                        <div
-                                            role="progressbar"
-                                            aria-label={`${candidate.candidateName} vote share`}
-                                            aria-valuemin={0}
-                                            aria-valuemax={100}
-                                            aria-valuenow={Number(percentage.toFixed(1))}
-                                            style={{ width: "100%", height: "14px", borderRadius: "999px", overflow: "hidden", background: "#374151" }}
-                                        >
-                                            <div style={{ width: `${Math.min(100, percentage)}%`, height: "100%", borderRadius: "999px", background: candidate.votes > 0 && leadingCandidate?.candidateId === candidate.candidateId ? "#22c55e" : "#60a5fa", transition: "width 0.3s ease" }} />
-                                        </div>
-                                    </article>
-                                );
-                            })}
-                        </div>
-                    )}
+                                <h3>Candidate-wise Results</h3>
+                                {candidates.length === 0 ? (
+                                    <p>No candidates have been added to this election yet.</p>
+                                ) : (
+                                    <div style={{ display: "grid", gap: "16px", margin: "16px 0" }}>
+                                        {chartResults.map((candidate) => {
+                                            const percentage = totalVotes > 0
+                                                ? (candidate.votes / totalVotes) * 100
+                                                : 0;
+                                            return (
+                                                <article key={candidate.candidateId} style={{ padding: "16px", border: "1px solid #374151", borderRadius: "10px", background: "#1f2937", color: "#f9fafb" }}>
+                                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "12px", flexWrap: "wrap", marginBottom: "10px" }}>
+                                                        <strong style={{ overflowWrap: "anywhere" }}>{candidate.candidateName}</strong>
+                                                        <span>{candidate.votes} vote{candidate.votes === 1 ? "" : "s"} · {percentage.toFixed(1)}%</span>
+                                                    </div>
+                                                    <div
+                                                        role="progressbar"
+                                                        aria-label={`${candidate.candidateName} vote share`}
+                                                        aria-valuemin={0}
+                                                        aria-valuemax={100}
+                                                        aria-valuenow={Number(percentage.toFixed(1))}
+                                                        style={{ width: "100%", height: "14px", borderRadius: "999px", overflow: "hidden", background: "#374151" }}
+                                                    >
+                                                        <div style={{ width: `${Math.min(100, percentage)}%`, height: "100%", borderRadius: "999px", background: candidate.votes > 0 && leadingCandidate?.candidateId === candidate.candidateId ? "#22c55e" : "#60a5fa", transition: "width 0.3s ease" }} />
+                                                    </div>
+                                                </article>
+                                            );
+                                        })}
+                                    </div>
+                                )}
 
-                    <button
+                                <button
 
-                        onClick={() =>
+                                    onClick={() =>
 
-                            fetchResults(
+                                        fetchResults(
 
-                                selectedElectionId
+                                            selectedElectionId
 
-                            )
+                                        )
 
-                        }
+                                    }
 
-                    >
+                                >
 
-                        Refresh Results
+                                    Refresh Results
 
-                    </button>
+                                </button>
 
-                    <button
-                        type="button"
-                        onClick={exportResultsToCSV}
-                        disabled={!results || results.length === 0}
-                        style={{ marginLeft: "10px" }}
-                    >
-                        Export Results CSV
-                    </button>
+                                <button
+                                    type="button"
+                                    onClick={exportResultsToCSV}
+                                    disabled={!results || results.length === 0}
+                                    style={{ marginLeft: "10px" }}
+                                >
+                                    Export Results CSV
+                                </button>
 
-                    <button
-                        type="button"
-                        onClick={exportResultsToPDF}
-                        disabled={!results || results.length === 0}
-                    >
-                        Download PDF Report
-                    </button>
+                                <button
+                                    type="button"
+                                    onClick={exportResultsToPDF}
+                                    disabled={!results || results.length === 0}
+                                >
+                                    Download PDF Report
+                                </button>
 
-                </>
+                            </>
 
-            )}
+                        )}
 
-            {/* ==========================================
+                        {/* ==========================================
 
                 MESSAGE
 
             ========================================== */}
 
-            {message && (
 
-                <p role="status" style={{ color: "green", margin: "10px 0" }}>
-
-                    {message}
-
-                </p>
-
-            )}
-
+                        {message && (
+                            <p role="status" className="admin-message">
+                                {message}
+                            </p>
+                        )}
+                    </section>
+                </main>
+            </div>
         </div>
-
     );
+
 
 };
 

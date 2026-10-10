@@ -1,0 +1,212 @@
+.admin-results {
+    color: #f9fafb;
+    display: grid;
+    gap: 22px;
+}
+
+.admin-results .results-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.admin-results .results-heading h2 {
+    margin: 0 0 8px;
+    font-size: 26px;
+}
+
+.admin-results .results-heading p,
+.admin-results .results-muted {
+    margin: 0;
+    color: #9ca3af;
+}
+
+.admin-results .results-panel {
+    padding: 22px;
+    border: 1px solid #374151;
+    border-radius: 14px;
+    background: #1f2937;
+}
+
+.admin-results .results-panel h3 {
+    margin-top: 0;
+}
+
+.admin-results label {
+    display: block;
+    margin-bottom: 8px;
+    color: #d1d5db;
+    font-weight: 600;
+}
+
+.admin-results select {
+    width: 100%;
+    max-width: 620px;
+    padding: 11px 12px;
+    border: 1px solid #4b5563;
+    border-radius: 8px;
+    background: #111827;
+    color: #f9fafb;
+}
+
+.admin-results .results-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    gap: 14px;
+}
+
+.admin-results .results-stat-card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    background: #1f2937;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-results .results-stat-card > span {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.admin-results .results-stat-card strong {
+    font-size: 26px;
+    overflow-wrap: anywhere;
+}
+
+.admin-results .results-stat-card .results-status {
+    text-transform: capitalize;
+    color: #93c5fd;
+}
+
+.admin-results .results-stat-card .results-leader {
+    font-size: 19px;
+}
+
+.admin-results .results-stat-card small {
+    color: #9ca3af;
+}
+
+.admin-results .results-candidate-list {
+    display: grid;
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.admin-results .results-candidate {
+    padding: 16px;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    background: #111827;
+}
+
+.admin-results .results-candidate-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.admin-results .results-candidate-info strong {
+    overflow-wrap: anywhere;
+}
+
+.admin-results .results-candidate-info span {
+    color: #d1d5db;
+    font-size: 14px;
+}
+
+.admin-results .results-progress-track {
+    width: 100%;
+    height: 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #374151;
+}
+
+.admin-results .results-progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: #60a5fa;
+    transition: width 0.3s ease;
+}
+
+.admin-results .results-progress-fill.results-progress-leader {
+    background: #22c55e;
+}
+
+.admin-results .results-export-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.admin-results button {
+    padding: 10px 15px;
+    border: 1px solid #4b5563;
+    border-radius: 8px;
+    background: #374151;
+    color: #f9fafb;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-results button:hover:not(:disabled) {
+    filter: brightness(1.15);
+}
+
+.admin-results button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.admin-results .results-export-actions button:first-child {
+    background: #065f46;
+    border-color: #047857;
+}
+
+.admin-results .results-export-actions button:last-child {
+    background: #1d4ed8;
+    border-color: #2563eb;
+}
+
+.admin-results .results-message {
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #064e3b;
+    color: #d1fae5;
+}
+
+.admin-results .results-error {
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #7f1d1d;
+    color: #fee2e2;
+}
+
+.admin-layout .admin-layout-content .admin-results {
+    width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .admin-results .results-panel {
+        padding: 16px;
+    }
+
+    .admin-results .results-heading h2 {
+        font-size: 22px;
+    }
+
+    .admin-results .results-candidate-info {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

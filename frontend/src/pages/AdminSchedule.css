@@ -1,0 +1,161 @@
+
+.admin-schedule {
+    width: 100%;
+}
+
+.schedule-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.schedule-heading h2 {
+    margin: 0 0 8px;
+    color: #f8fafc;
+}
+
+.schedule-heading p,
+.schedule-muted {
+    margin: 0;
+    color: #929bad;
+    line-height: 1.6;
+}
+
+.admin-schedule .schedule-panel {
+    margin-bottom: 22px;
+    padding: 24px;
+    border: 1px solid #293142;
+    border-radius: 12px;
+    background: #121620;
+}
+
+.admin-schedule .schedule-panel h3 {
+    margin: 0 0 18px;
+    color: #f8fafc;
+}
+
+.admin-schedule label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #cbd5e1;
+    font-size: 13px;
+}
+
+.admin-layout .admin-layout-content .admin-schedule input,
+.admin-layout .admin-layout-content .admin-schedule select {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #30394b;
+    border-radius: 8px;
+    background: #0d1119;
+    color: #e5e7eb;
+}
+
+.admin-schedule .schedule-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin: 20px 0 24px;
+}
+
+.schedule-current {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid #293142;
+    border-radius: 10px;
+    background: #0d1119;
+}
+
+.schedule-current p {
+    margin: 10px 0 0;
+    color: #cbd5e1;
+    overflow-wrap: anywhere;
+}
+
+.schedule-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #293142;
+    color: #cbd5e1;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+.schedule-status.status-active {
+    background: #12372b;
+    color: #6ee7b7;
+}
+
+.schedule-status.status-upcoming {
+    background: #422e12;
+    color: #fcd34d;
+}
+
+.schedule-status.status-completed {
+    background: #293142;
+    color: #cbd5e1;
+}
+
+.admin-schedule button {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.admin-schedule .schedule-primary-button {
+    border: 1px solid #818cf8;
+    background: #818cf8;
+    color: #0b0d12;
+    font-weight: 600;
+}
+
+.admin-schedule .schedule-secondary-button {
+    border: 1px solid #3a4357;
+    background: #1a2030;
+    color: #e5e7eb;
+}
+
+.admin-schedule button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.admin-schedule .schedule-message,
+.admin-schedule .schedule-error {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 8px;
+}
+
+.admin-schedule .schedule-message {
+    border: 1px solid #245a49;
+    background: #10251f;
+    color: #6ee7b7;
+}
+
+.admin-schedule .schedule-error {
+    border: 1px solid #7f2938;
+    background: #35171d;
+    color: #fda4af;
+}
+
+@media (max-width: 650px) {
+    .admin-schedule .schedule-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-schedule .schedule-panel {
+        padding: 18px;
+    }
+
+    .schedule-heading {
+        align-items: flex-start;
+    }
+}
