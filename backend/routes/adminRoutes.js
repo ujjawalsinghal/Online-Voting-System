@@ -1,10 +1,15 @@
 const express = require("express");
+const upload = require("../middleware/uploadMiddleware");
+const { uploadCandidateImage } = require("../controllers/uploadController");
 
 const {
     getAllElections,
     createElection,
     createCandidate,
     getCandidates,
+    updateCandidate,
+    deleteCandidate,
+    updateElectionDetails,
     updateElectionSchedule,
     activateElection,
     closeElection,
@@ -23,6 +28,12 @@ const router = express.Router();
 // All admin routes require authentication + admin role
 router.use(protect, adminOnly);
 
+router.post(
+    "/upload-candidate-image",
+    upload.single("image"),
+    uploadCandidateImage
+);
+
 // Eligible voter management
 router.post("/eligible-voters", addEligibleVoter);
 
@@ -32,6 +43,19 @@ router.post("/elections", createElection);
 router.delete("/elections/:electionId", deleteElection);
 
 router.get("/elections", getAllElections);
+
+router.get(
+    "/elections/:electionId/candidates",
+    getCandidates
+);
+
+router.put("/candidates/:candidateId", updateCandidate);
+router.delete("/candidates/:candidateId", deleteCandidate);
+
+router.put(
+    "/elections/:electionId/details",
+    updateElectionDetails
+);
 
 
 router.put(

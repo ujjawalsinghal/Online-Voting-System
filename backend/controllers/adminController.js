@@ -212,6 +212,143 @@ const getCandidates = async (req, res) => {
     }
 };
 
+
+const updateCandidate = async (req, res) => {
+    try {
+        const { candidateId } = req.params;
+        const { name, description, image } = req.body;
+
+        if (typeof name !== "string" || !name.trim()) {
+            return res.status(400).json({
+                message: "Candidate name is required"
+            });
+        }
+
+        const candidate = await Candidate.findById(candidateId);
+
+        if (!candidate) {
+            return res.status(404).json({
+                message: "Candidate not found"
+            });
+        }
+
+        const election = await Election.findById(candidate.election);
+
+        if (!election) {
+            return res.status(404).json({
+                message: "Election not found"
+            });
+        }
+
+        if (election.status !== "upcoming") {
+            return res.status(400).json({
+                message: "Candidates can only be edited before an election starts"
+            });
+        }
+
+        const voteCount = await Vote.countDocuments({
+            candidate: candidate._id
+        });
+
+        if (voteCount > 0) {
+            return res.status(400).json({
+                message: "Cannot edit a candidate who has votes"
+            });
+        }
+
+        if (
+            description !== undefined &&
+            typeof description !== "string"
+        ) {
+            return res.status(400).json({
+                message: "Description must be a string"
+            });
+        }
+
+        if (image !== undefined && typeof image !== "string") {
+            return res.status(400).json({
+                message: "Image must be a URL string"
+            });
+        }
+
+        candidate.name = name.trim();
+
+        if (description !== undefined) {
+            candidate.description = description.trim();
+        }
+
+        if (image !== undefined) {
+            candidate.image = image.trim();
+        }
+
+        await candidate.save();
+
+        return res.json({
+            message: "Candidate updated successfully",
+            candidate
+        });
+    } catch (error) {
+        console.error("Update candidate error:", error);
+
+        return res.status(500).json({
+            message: "Server error while updating candidate"
+        });
+    }
+};
+
+
+const deleteCandidate = async (req, res) => {
+    try {
+        const { candidateId } = req.params;
+
+        const candidate = await Candidate.findById(candidateId);
+
+        if (!candidate) {
+            return res.status(404).json({
+                message: "Candidate not found"
+            });
+        }
+
+        const election = await Election.findById(candidate.election);
+
+        if (!election) {
+            return res.status(404).json({
+                message: "Election not found"
+            });
+        }
+
+        if (election.status !== "upcoming") {
+            return res.status(400).json({
+                message: "Candidates can only be deleted before an election starts"
+            });
+        }
+
+        const voteCount = await Vote.countDocuments({
+            candidate: candidate._id
+        });
+
+        if (voteCount > 0) {
+            return res.status(400).json({
+                message: "Cannot delete a candidate who has votes"
+            });
+        }
+
+        await Candidate.deleteOne({
+            _id: candidate._id
+        });
+
+        return res.json({
+            message: "Candidate deleted successfully"
+        });
+    } catch (error) {
+        console.error("Delete candidate error:", error);
+
+        return res.status(500).json({
+            message: "Server error while deleting candidate"
+        });
+    }
+};
+
 // Activate an election
 const activateElection = async (req, res) => {
     try {
@@ -262,6 +399,55 @@ const activateElection = async (req, res) => {
         });
     }
 };
+
+
+const updateElectionDetails = async (req, res) => {
+    try {
+        const { electionId } = req.params;
+        const { title, description } = req.body;
+
+        if (
+            typeof title !== "string" ||
+            !title.trim() ||
+            typeof description !== "string"
+        ) {
+            return res.status(400).json({
+                message: "A valid title and description are required"
+            });
+        }
+
+        const election = await Election.findById(electionId);
+
+        if (!election) {
+            return res.status(404).json({
+                message: "Election not found"
+            });
+        }
+
+        if (election.status !== "upcoming") {
+            return res.status(400).json({
+                message: "Only upcoming elections can be edited"
+            });
+        }
+
+        election.title = title.trim();
+        election.description = description.trim();
+
+        await election.save();
+
+        return res.json({
+            message: "Election details updated successfully",
+            election
+        });
+    } catch (error) {
+        console.error("Update election details error:", error);
+
+        return res.status(500).json({
+            message: "Server error while updating election details"
+        });
+    }
+};
+
 
 // Update election schedule
 const updateElectionSchedule = async (req, res) => {
@@ -498,6 +684,9 @@ module.exports = {
     deleteElection,
     createCandidate,
     getCandidates,
+    updateCandidate,
+    deleteCandidate,
+    updateElectionDetails,
     updateElectionSchedule,
     activateElection,
     closeElection,
