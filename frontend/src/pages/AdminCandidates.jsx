@@ -36,47 +36,26 @@ function AdminCandidates() {
     const [editImageFile, setEditImageFile] = useState(null);
     const [editImagePreview, setEditImagePreview] = useState("");
 
-    const selectedElection = elections.find(
-        (item) => item._id === selectedElectionId
-    );
+    const selectedElection =
+        elections.find((item) => item._id === selectedElectionId) ||
+        elections.find((item) => item.status === "active") ||
+        elections[0] ||
+        null;
 
+    const currentElectionId = selectedElection?._id || "";
     const canEditCandidates = selectedElection?.status === "upcoming";
+
+    const [prevElectionId, setPrevElectionId] = useState(currentElectionId);
+
+    if (currentElectionId !== prevElectionId) {
+        setPrevElectionId(currentElectionId);
+        setCandidates([]);
+        setLoadingCandidates(Boolean(currentElectionId));
+    }
 
     const authHeaders = () => ({
         Authorization: `Bearer ${getAdminToken()}`,
     });
-
-    const fetchElections = useCallback(async () => {
-        try {
-            setError("");
-
-            const response = await api.get("/admin/elections", {
-                headers: authHeaders(),
-            });
-
-            const items = response.data.elections || [];
-            setElections(items);
-
-            setSelectedElectionId((currentId) => {
-                if (items.some((item) => item._id === currentId)) {
-                    return currentId;
-                }
-
-                const active = items.find(
-                    (item) => item.status === "active"
-                );
-
-                return active?._id || items[0]?._id || "";
-            });
-        } catch (err) {
-            setError(
-                err.response?.data?.message ||
-                "Failed to load elections."
-            );
-        } finally {
-            setLoadingElections(false);
-        }
-    }, []);
 
     const fetchCandidates = useCallback(async (electionId) => {
         if (!electionId) {
@@ -107,14 +86,91 @@ function AdminCandidates() {
     }, []);
 
     useEffect(() => {
-        fetchElections();
-    }, [fetchElections]);
+        let isCancelled = false;
+
+        const loadElections = async () => {
+            try {
+                setError("");
+
+                const response = await api.get("/admin/elections", {
+                    headers: authHeaders(),
+                });
+
+                if (!isCancelled) {
+                    const items = response.data.elections || [];
+                    setElections(items);
+
+                    setSelectedElectionId((prevId) => {
+                        if (prevId && items.some((item) => item._id === prevId)) {
+                            return prevId;
+                        }
+
+                        const active = items.find(
+                            (item) => item.status === "active"
+                        );
+
+                        return active?._id || items[0]?._id || "";
+                    });
+                }
+            } catch (err) {
+                if (!isCancelled) {
+                    setError(
+                        err.response?.data?.message ||
+                        "Failed to load elections."
+                    );
+                }
+            } finally {
+                if (!isCancelled) {
+                    setLoadingElections(false);
+                }
+            }
+        };
+
+        loadElections();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, []);
 
     useEffect(() => {
-        fetchCandidates(selectedElectionId);
-        setEditingId("");
-        setMessage("");
-    }, [selectedElectionId, fetchCandidates]);
+        if (!currentElectionId) {
+            return;
+        }
+
+        let isCancelled = false;
+
+        const loadCandidates = async () => {
+            try {
+                const response = await api.get(
+                    `/admin/elections/${currentElectionId}/candidates`,
+                    { headers: authHeaders() }
+                );
+
+                if (!isCancelled) {
+                    setCandidates(response.data.candidates || []);
+                }
+            } catch (err) {
+                if (!isCancelled) {
+                    setCandidates([]);
+                    setError(
+                        err.response?.data?.message ||
+                        "Failed to load candidates."
+                    );
+                }
+            } finally {
+                if (!isCancelled) {
+                    setLoadingCandidates(false);
+                }
+            }
+        };
+
+        loadCandidates();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [currentElectionId]);
 
     useEffect(() => {
         return () => {
@@ -183,7 +239,7 @@ function AdminCandidates() {
         setMessage("");
         setError("");
 
-        if (!selectedElectionId) {
+        if (!currentElectionId) {
             setError("Please select an election.");
             return;
         }
@@ -206,7 +262,7 @@ function AdminCandidates() {
                     name: name.trim(),
                     description: description.trim(),
                     image: imageUrl,
-                    electionId: selectedElectionId,
+                    electionId: currentElectionId,
                 },
                 { headers: authHeaders() }
             );
@@ -217,7 +273,7 @@ function AdminCandidates() {
             setImageFile(null);
             setImagePreview("");
 
-            await fetchCandidates(selectedElectionId);
+            await fetchCandidates(currentElectionId);
         } catch (err) {
             setError(
                 err.response?.data?.message ||
@@ -288,7 +344,7 @@ function AdminCandidates() {
             );
 
             cancelEditing();
-            await fetchCandidates(selectedElectionId);
+            await fetchCandidates(currentElectionId);
         } catch (err) {
             setError(
                 err.response?.data?.message ||
@@ -332,7 +388,7 @@ function AdminCandidates() {
                 "Candidate deleted successfully."
             );
 
-            await fetchCandidates(selectedElectionId);
+            await fetchCandidates(currentElectionId);
         } catch (err) {
             setError(
                 err.response?.data?.message ||
@@ -358,8 +414,8 @@ function AdminCandidates() {
                 <button
                     type="button"
                     className="candidate-secondary-button"
-                    onClick={() => fetchCandidates(selectedElectionId)}
-                    disabled={!selectedElectionId || loadingCandidates}
+                    onClick={() => fetchCandidates(currentElectionId)}
+                    disabled={!currentElectionId || loadingCandidates}
                 >
                     {loadingCandidates ? "Refreshing..." : "Refresh"}
                 </button>
@@ -384,10 +440,13 @@ function AdminCandidates() {
 
                 <select
                     id="candidate-election"
-                    value={selectedElectionId}
-                    onChange={(event) =>
-                        setSelectedElectionId(event.target.value)
-                    }
+                    value={currentElectionId}
+                    onChange={(event) => {
+                        setSelectedElectionId(event.target.value);
+                        setLoadingCandidates(true);
+                        setEditingId("");
+                        setMessage("");
+                    }}
                 >
                     {elections.length === 0 && (
                         <option value="">No elections available</option>
@@ -419,7 +478,7 @@ function AdminCandidates() {
             <section className="candidate-panel">
                 <h3>Add Candidate</h3>
 
-                {!selectedElectionId ? (
+                {!currentElectionId ? (
                     <p>Create an election before adding candidates.</p>
                 ) : (
                     <form onSubmit={handleAddCandidate}>
@@ -499,7 +558,7 @@ function AdminCandidates() {
 
                 {loadingCandidates ? (
                     <p role="status">Loading candidates...</p>
-                ) : !selectedElectionId ? (
+                ) : !currentElectionId ? (
                     <p>Select an election to view its candidates.</p>
                 ) : candidates.length === 0 ? (
                     <div className="candidate-empty">

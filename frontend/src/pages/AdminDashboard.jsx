@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { io } from "socket.io-client";
 
@@ -925,7 +925,7 @@ const AdminDashboard = () => {
 
     // --------------------------------------------------
 
-    const fetchElections = async () => {
+    const fetchElections = useCallback(async () => {
 
         try {
 
@@ -973,15 +973,13 @@ const AdminDashboard = () => {
 
             } else if (
 
-                fetchedElections.length > 0 &&
-
-                !selectedElectionId
+                fetchedElections.length > 0
 
             ) {
 
                 setSelectedElectionId(
 
-                    fetchedElections[0]._id
+                    (prevId) => prevId || fetchedElections[0]._id
 
                 );
 
@@ -999,7 +997,7 @@ const AdminDashboard = () => {
 
         }
 
-    };
+    }, []);
 
     // --------------------------------------------------
 
@@ -1218,7 +1216,7 @@ const AdminDashboard = () => {
 
         initializeDashboard();
 
-    }, []);
+    }, [fetchElections]);
 
     // --------------------------------------------------
 
